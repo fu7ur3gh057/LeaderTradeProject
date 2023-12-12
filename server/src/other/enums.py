@@ -4,6 +4,7 @@ from enum import Enum
 class TimeInterval(Enum):
     one_min = "1 min"
     five_mins = "5 mins"
+    half_hour = "30 mins"
     one_hour = "1 hour"
     five_hours = "5 hours"
     twelve_hours = "12 hours"
@@ -15,7 +16,7 @@ class TaskStatus(Enum):
     disabled = "Disabled"
 
 
-class UnloaderServiceType(Enum):
+class UnloadServiceType(Enum):
     fortochki = "FORTOCHKI"
     starco = "STARCO"
 
