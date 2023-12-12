@@ -102,3 +102,11 @@ def get_tire_goods_info(code_list: str) -> list[TyreContainerSchema]:
         tyre_schema = TyreContainerSchema.to_pydantic(data=data)
         result_list.append(tyre_schema)
     return result_list
+
+
+def convert_code_list(code_list: list[str]) -> str:
+    d_type = _client.get_type("ns3:ArrayOfstring")
+    arr = d_type()
+    for code in code_list:
+        arr.string.append(code)
+    return arr

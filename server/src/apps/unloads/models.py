@@ -11,7 +11,7 @@ from src.apps.base.models import TimeStampedMixin, PKIDMixin
 from src.other.enums import UnloadServiceType, TimeInterval, TaskStatus
 
 
-class Unload(PKIDMixin, TimeStampedMixin):
+class UnloadScheduler(PKIDMixin, TimeStampedMixin):
     title = models.CharField(max_length=70, verbose_name=_("Название"))
     task = models.OneToOneField(
         PeriodicTask,
@@ -71,33 +71,37 @@ class Unload(PKIDMixin, TimeStampedMixin):
         )
         self.save()
 
-    def _stop(self) -> None:
+    def stop_task(self) -> None:
         self.status = TaskStatus.disabled
         self.save()
 
     def terminate(self) -> None:
         if self.task is not None:
-            self._stop()
+            self.stop_task()
             ptask = self.task
+            self.task = None
             ptask.delete()
 
     def save(self, *args, **kwargs):
         if not self.pk:
             if (
                 self.service == UnloadServiceType.fortochki
-                and Unload.objects.filter(service=UnloadServiceType.fortochki).exists()
+                and UnloadScheduler.objects.filter(
+                    service=UnloadServiceType.fortochki
+                ).exists()
             ):
                 raise ValidationError("Unload with this service already created")
             if (
                 self.service == UnloadServiceType.starco
-                and Unload.objects.filter(service=UnloadServiceType.starco).exists()
+                and UnloadScheduler.objects.filter(
+                    service=UnloadServiceType.starco
+                ).exists()
             ):
                 raise ValidationError("Unload with this service already created")
-        super(Unload, self).save(*args, **kwargs)
+        super(UnloadScheduler, self).save(*args, **kwargs)
 
-    def delete(self, *args, **kwargs) -> Any:
-        self.terminate()
-        return super(self.__class__, self).delete(*args, **kwargs)
+    # def delete(self, *args, **kwargs) -> Any:
+    #     return super(self.__class__, self).delete(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.title}"
