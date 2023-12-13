@@ -33,8 +33,8 @@ class UnloadScheduler(PKIDMixin, TimeStampedMixin):
     status = EnumChoiceField(
         TaskStatus, default=TaskStatus.active, verbose_name=_("Статус")
     )
-    tire_unload = models.BooleanField(default=True)
-    rim_unload = models.BooleanField(default=True)
+    tire_unload = models.BooleanField(default=True, verbose_name=_("Выгрузка шин"))
+    rim_unload = models.BooleanField(default=True, verbose_name=_("Выгрузка дисков"))
 
     class Meta:
         verbose_name = _("Выгрузка")

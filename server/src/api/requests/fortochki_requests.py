@@ -34,14 +34,16 @@ def refresh_wsdl_file() -> None:
         print(f"Error: {e}")
 
 
-def _get_tire_total_pages() -> int:
+def _get_tire_pages_count() -> int:
+    global _client
     tires = _client.service.GetFindTyre(
         login=_username, password=_password, filter={"diameter_min": 14}
     )
     return int(tires.totalPages)
 
 
-def _get_rim_total_pages() -> int:
+def _get_rim_pages_count() -> int:
+    global _client
     disks = _client.service.GetFindDisk(
         login=_username, password=_password, filter={"diameter_min": 14}
     )
@@ -49,9 +51,11 @@ def _get_rim_total_pages() -> int:
 
 
 def find_rim_list() -> list[DiskPriceRestSchema]:
+    global _client
     rim_list = []
-    total_pages = _get_rim_total_pages()
-    for _ in range(total_pages):
+    pages_count = _get_rim_pages_count()
+    print("Finding Rims Data..")
+    for _ in range(pages_count):
         rims = _client.service.GetFindDisk(
             login=_username,
             password=_password,
@@ -66,9 +70,11 @@ def find_rim_list() -> list[DiskPriceRestSchema]:
 
 
 def find_tire_list() -> list[TyrePriceRestSchema]:
+    global _client
     tire_list = []
-    total_pages = _get_tire_total_pages()
-    for _ in range(total_pages):
+    pages_count = _get_tire_pages_count()
+    print("Finding Tires Data..")
+    for _ in range(5):
         tires = _client.service.GetFindTyre(
             login=_username,
             password=_password,
@@ -83,6 +89,7 @@ def find_tire_list() -> list[TyrePriceRestSchema]:
 
 
 def get_rim_goods_info(code_list: str) -> list[RimContainerSchema]:
+    global _client
     result_list = []
     info_list = _client.service.GetGoodsInfo(
         login=_username, password=_password, code_list=code_list
@@ -94,6 +101,7 @@ def get_rim_goods_info(code_list: str) -> list[RimContainerSchema]:
 
 
 def get_tire_goods_info(code_list: str) -> list[TyreContainerSchema]:
+    global _client
     result_list = []
     info_list = _client.service.GetGoodsInfo(
         login=_username, password=_password, code_list=code_list
@@ -105,6 +113,7 @@ def get_tire_goods_info(code_list: str) -> list[TyreContainerSchema]:
 
 
 def convert_code_list(code_list: list[str]) -> str:
+    global _client
     d_type = _client.get_type("ns3:ArrayOfstring")
     arr = d_type()
     for code in code_list:

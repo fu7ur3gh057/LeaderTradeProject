@@ -56,9 +56,9 @@ class DayOfWeek(str, Enum):
 
 
 class ProductType(str, Enum):
-    RIMS = "rims"
-    TIRES = "tires"
-    ACCESSORY = "accessory"
+    RIMS = "Диски"
+    TIRES = "Шины"
+    ACCESSORY = "Аксессуары"
 
 
 class ProductColor(str, Enum):

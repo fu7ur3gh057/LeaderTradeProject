@@ -89,6 +89,7 @@ LOCAL_APPS = [
     "src.apps.orders.apps.OrdersConfig",
     "src.apps.actions.apps.ActionsConfig",
     "src.apps.unloads.apps.UnloadsConfig",
+    "src.apps.news.apps.NewsConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + LOCAL_APPS
@@ -245,4 +246,4 @@ CORS_ALLOW_METHODS = (
     "PUT",
 )
 
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 20000
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000

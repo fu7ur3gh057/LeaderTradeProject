@@ -63,7 +63,7 @@ class ProductFilterAPIView(generics.ListAPIView):
     ]
 
     def get_queryset(self) -> list[Product]:
-        return self.queryset.order_by("-created_at")
+        return self.queryset.filter(rest__gt=0).order_by("-created_at")
 
 
 class ProductDetailAPIView(generics.GenericAPIView):

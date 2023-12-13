@@ -38,7 +38,7 @@ urlpatterns = [
     path(f"{API_URL}/interface/", include("src.apps.interface.api.urls")),
     path(f"{API_URL}/orders/", include("src.apps.orders.api.urls")),
     path(f"{API_URL}/actions/", include("src.apps.actions.api.urls")),
-    # path(f"{API_URL}/news/", include("apps.news.api.urls")),
+    path(f"{API_URL}/news/", include("src.apps.news.api.urls")),
     # Admin
     path("admin/", admin.site.urls),
     # Wagtail

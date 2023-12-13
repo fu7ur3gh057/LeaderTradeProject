@@ -18,7 +18,7 @@ def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
     images = [data.img_big_my, data.img_big_pish, data.img_small]
     price_params = data.whpr.wh_price_rest[0]
     rest_count = sum([i.rest for i in data.whpr.wh_price_rest])
-    category = Category.objects.filter(title="Диски").first()
+    category = Category.objects.filter(title=ProductType.RIMS).first()
     rim = Product.objects.create(
         title=data.name,
         category=category,
@@ -34,7 +34,7 @@ def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
 
 
 def update_fortochki_price_info(
-    data: DiskPriceRestSchema | TyrePriceRestSchema, product: Product
+        data: DiskPriceRestSchema | TyrePriceRestSchema, product: Product
 ) -> None:
     price_params = data.whpr.wh_price_rest[0]
     rest_count = sum([i.rest for i in data.whpr.wh_price_rest])
@@ -59,7 +59,7 @@ def update_fortochki_rim_info(data: RimContainerSchema) -> None:
     rim.bolts = data.bolts_spacing
     rim.bolts_2 = data.bolts_spacing2
     rim.width = data.width
-    brand = brand
+    rim.brand = brand
     rim.save()
 
 
@@ -68,7 +68,7 @@ def create_fortochki_tire(data: TyrePriceRestSchema) -> str | None:
     price_params = data.whpr.wh_price_rest[0]
     rest_count = sum([i.rest for i in data.whpr.wh_price_rest])
     # external_data = {"code": data.code, "images": images, "price": price_params.price}
-    category = Category.objects.filter(title="Шины").first()
+    category = Category.objects.filter(title=ProductType.TIRES).first()
     tire = Product.objects.create(
         title=data.name,
         category=category,
@@ -100,24 +100,26 @@ def update_fortochki_tire_info(data: TyreContainerSchema) -> None:
     tire.save()
 
 
-def get_index_values(data: StarcoRimSchema):
-    pass
+# STARCO
 
-
-def _get_rim_model_name_or_none(data: StarcoRimSchema) -> str:
+def _get_model_name_or_none(data) -> str:
     if data.Brand == "" or data.Brand is None:
         return ""
-    split_list = data.full_name.split(data.Brand)
+    # splitting by Brand
+    if data.Brand in data.full_name:
+        split_list = data.full_name.split(data.Brand)
+    else:
+        split_list = data.full_name.lower().split(data.Brand.lower())
     if len(split_list) < 2:
         return ""
     else:
         return split_list[1].strip()
 
 
-def starco_create_rim(data: StarcoRimSchema):
+def starco_create_rim(data: StarcoRimSchema) -> None:
     try:
-        model = _get_rim_model_name_or_none(data)
-        category = Category.objects.filter(title="Диски").first()
+        model = _get_model_name_or_none(data=data)
+        category = Category.objects.filter(title=ProductType.RIMS).first()
         brand = Brand.objects.filter(title__exact=data.Brand).first()
         if brand is None:
             brand = Brand.objects.create(title=data.Brand)
@@ -140,12 +142,52 @@ def starco_create_rim(data: StarcoRimSchema):
         print(ex)
 
 
-def starco_create_tire(data: StarcoTyreSchema):
-    category = Category.objects.filter(title="Шины").first()
-    brand = Brand.objects.filter(title__exact=data.Brand).first()
-    if brand is None:
-        brand = Brand.objects.create(title=data.Brand)
-    Product.objects.create(
-        type=ProductType.TIRES,
-        model=data.Profil,
-    )
+def get_width_height_size(data: StarcoTyreSchema) -> tuple:
+    try:
+        size = data.Size
+        if '/' in size and 'R' in size:
+            split_list = size.split('R')
+            wh = split_list[0].split('/')
+            return float_or_none(wh[0]), int_or_none(wh[1]), int_or_none(split_list[1])
+        elif '/' in size and '-' in size:
+            split_list = size.split('-')
+            wh = split_list[0].split('/')
+            return float_or_none(wh[0]), int_or_none(wh[1]), int_or_none(split_list[1])
+        elif '-' in size:
+            split_list = size.split('-')
+            return float_or_none(split_list[0]), None, int_or_none(split_list[1])
+        # elif '.' in size and 'R' in size:
+        #     pass
+        elif 'R' in size:
+            split_list = size.split('R')
+            return float_or_none(split_list[0]), None, int_or_none(split_list[1])
+        else:
+            return None, None, None
+    except Exception as ex:
+        print(ex)
+        return None, None, None
+
+
+def starco_create_tire(data: StarcoTyreSchema) -> None:
+    try:
+        model = _get_model_name_or_none(data=data)
+        category = Category.objects.filter(title=ProductType.TIRES).first()
+        brand = Brand.objects.filter(title__exact=data.Brand).first()
+        width, height, size = get_width_height_size(data=data)
+        if brand is None:
+            brand = Brand.objects.create(title=data.Brand)
+        Product.objects.create(
+            category=category,
+            type=ProductType.TIRES,
+            title=data.full_name,
+            model=model,
+            speed_index=data.SI_1,
+            load_index=data.LI_1,
+            width=width,
+            height=height,
+            size=size,
+            brand=brand,
+            ext_data=data.model_dump(),
+        )
+    except Exception as ex:
+        print(ex)

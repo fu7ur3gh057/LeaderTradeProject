@@ -131,10 +131,9 @@ class Product(PKIDMixin, TimeStampedMixin):
         null=True,
         on_delete=models.CASCADE,
     )
-    discount = models.IntegerField(default=0, verbose_name=_("Скидка %"))
     current_price = models.DecimalField(
-        max_digits=8,
-        decimal_places=3,
+        max_digits=12,
+        decimal_places=5,
         verbose_name=_("Текущая Стоимость"),
         blank=True,
         null=True,
@@ -145,6 +144,13 @@ class Product(PKIDMixin, TimeStampedMixin):
         verbose_name=_("Стоимость"),
         null=True,
         blank=True,
+    )
+    discount = models.DecimalField(
+        max_digits=12,
+        decimal_places=5,
+        verbose_name=_("Скидка"),
+        blank=True,
+        default=0,
     )
     bar_code = models.IntegerField(
         verbose_name=_("Код(Артикул)"), blank=True, null=True
@@ -175,9 +181,8 @@ class Product(PKIDMixin, TimeStampedMixin):
             # update slug
             self.slug = slugify(self.title)
         # update current_price
-        if self.discount != 0:
-            percent_price = (self.price * self.discount) / 100
-            self.current_price = self.price - percent_price
+        if self.price is not None:
+            self.current_price = float(self.price) - float(self.discount)
         super(Product, self).save(*args, **kwargs)
 
     @property

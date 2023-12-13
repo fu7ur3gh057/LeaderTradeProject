@@ -40,6 +40,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "current_price",
             "price",
             "color",
+            "rest",
             "bar_code",
             "image",
             "created_at",
@@ -54,23 +55,26 @@ class ProductBrandSerializer(serializers.ModelSerializer):
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     type = EnumChoiceField(enum_class=ProductType)
-    album = serializers.SerializerMethodField()
 
-    def get_album(self, obj: Product) -> list[str]:
-        return [img.image.url for img in obj.album.all()]
+    # album = serializers.SerializerMethodField()
+    #
+    # def get_album(self, obj: Product) -> list[str]:
+    #     return [img.image.url for img in obj.album.all()]
 
     class Meta:
         model = Product
-        fields = [
-            "pk_id",
-            "type",
-            "title",
-            "slug",
-            "discount",
-            "price",
-            "bar_code",
-            "image",
-            "album",
-            "created_at",
-            "ext_data",
-        ]
+        fields = "__all__"
+        # fields = [
+        #     "pk_id",
+        #     "type",
+        #     "title",
+        #     "slug",
+        #     "discount",
+        #     "price",
+        #     "bar_code",
+        #     "image",
+        #     "album",
+        #     "created_at",
+        #     "rest",
+        #     "ext_data",
+        # ]
