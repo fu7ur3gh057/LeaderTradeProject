@@ -14,6 +14,13 @@ from src.other.enums import ProductType
 from src.utils.number_utils import float_or_none, int_or_none
 
 
+def get_or_create_brand(title: str) -> Brand:
+    brand = Brand.objects.filter(title__iexact=title).first()
+    if brand is None:
+        brand = Brand.objects.create(title=title)
+    return brand
+
+
 def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
     images = [data.img_big_my, data.img_big_pish, data.img_small]
     price_params = data.whpr.wh_price_rest[0]
@@ -34,7 +41,7 @@ def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
 
 
 def update_fortochki_price_info(
-        data: DiskPriceRestSchema | TyrePriceRestSchema, product: Product
+    data: DiskPriceRestSchema | TyrePriceRestSchema, product: Product
 ) -> None:
     price_params = data.whpr.wh_price_rest[0]
     rest_count = sum([i.rest for i in data.whpr.wh_price_rest])
@@ -49,9 +56,7 @@ def update_fortochki_rim_info(data: RimContainerSchema) -> None:
     rim = Product.objects.filter(filter_query).first()
     if rim is None:
         return None
-    brand = Brand.objects.filter(title__exact=data.brand).first()
-    if brand is None:
-        brand = Brand.objects.create(title=data.brand)
+    brand = get_or_create_brand(title=data.brand)
     rim.dia = data.dia
     rim.et = data.et
     rim.pcd = data.bolts_spacing
@@ -87,9 +92,7 @@ def update_fortochki_tire_info(data: TyreContainerSchema) -> None:
     tire = Product.objects.filter(filter_query).first()
     if tire is None:
         return None
-    brand = Brand.objects.filter(title__exact=data.brand).first()
-    if brand is None:
-        brand = Brand.objects.create(title=data.brand)
+    brand = get_or_create_brand(title=data.brand)
     tire.width = data.width
     tire.width2 = data.subwidth
     tire.season = data.season
@@ -101,6 +104,7 @@ def update_fortochki_tire_info(data: TyreContainerSchema) -> None:
 
 
 # STARCO
+
 
 def _get_model_name_or_none(data) -> str:
     if data.Brand == "" or data.Brand is None:
@@ -120,9 +124,7 @@ def starco_create_rim(data: StarcoRimSchema) -> None:
     try:
         model = _get_model_name_or_none(data=data)
         category = Category.objects.filter(title=ProductType.RIMS).first()
-        brand = Brand.objects.filter(title__exact=data.Brand).first()
-        if brand is None:
-            brand = Brand.objects.create(title=data.Brand)
+        brand = get_or_create_brand(title=data.Brand)
         Product.objects.create(
             category=category,
             type=ProductType.RIMS,
@@ -145,21 +147,21 @@ def starco_create_rim(data: StarcoRimSchema) -> None:
 def get_width_height_size(data: StarcoTyreSchema) -> tuple:
     try:
         size = data.Size
-        if '/' in size and 'R' in size:
-            split_list = size.split('R')
-            wh = split_list[0].split('/')
+        if "/" in size and "R" in size:
+            split_list = size.split("R")
+            wh = split_list[0].split("/")
             return float_or_none(wh[0]), int_or_none(wh[1]), int_or_none(split_list[1])
-        elif '/' in size and '-' in size:
-            split_list = size.split('-')
-            wh = split_list[0].split('/')
+        elif "/" in size and "-" in size:
+            split_list = size.split("-")
+            wh = split_list[0].split("/")
             return float_or_none(wh[0]), int_or_none(wh[1]), int_or_none(split_list[1])
-        elif '-' in size:
-            split_list = size.split('-')
+        elif "-" in size:
+            split_list = size.split("-")
             return float_or_none(split_list[0]), None, int_or_none(split_list[1])
         # elif '.' in size and 'R' in size:
         #     pass
-        elif 'R' in size:
-            split_list = size.split('R')
+        elif "R" in size:
+            split_list = size.split("R")
             return float_or_none(split_list[0]), None, int_or_none(split_list[1])
         else:
             return None, None, None
@@ -172,10 +174,8 @@ def starco_create_tire(data: StarcoTyreSchema) -> None:
     try:
         model = _get_model_name_or_none(data=data)
         category = Category.objects.filter(title=ProductType.TIRES).first()
-        brand = Brand.objects.filter(title__exact=data.Brand).first()
         width, height, size = get_width_height_size(data=data)
-        if brand is None:
-            brand = Brand.objects.create(title=data.Brand)
+        brand = get_or_create_brand(title=data.Brand)
         Product.objects.create(
             category=category,
             type=ProductType.TIRES,
@@ -191,3 +191,7 @@ def starco_create_tire(data: StarcoTyreSchema) -> None:
         )
     except Exception as ex:
         print(ex)
+
+
+def update_price():
+    pass

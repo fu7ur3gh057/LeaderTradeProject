@@ -12,5 +12,5 @@ User = get_user_model()
 @receiver(post_save, sender=User)
 def create_verification_signal(sender, instance: User, created: bool, **kwargs) -> None:
     if created:
-        code = generate_verification_code()
-        Verification.objects.create(user=instance, sms_code=code)
+        verification = Verification.objects.create(user=instance)
+        verification.generate_token()

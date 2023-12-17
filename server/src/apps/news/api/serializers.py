@@ -16,7 +16,6 @@ class WagtailImageSerializer(serializers.Serializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-
     def resolve_body(self, obj: Post):
         res = []
         for b in obj.body:
@@ -27,7 +26,11 @@ class PostSerializer(serializers.ModelSerializer):
                 res.append({"type": b.block_type, "value": gal, "id": b.id})
             elif b.block_type == "image":
                 res.append(
-                    {"type": b.block_type, "value": WagtailImageSerializer(b.value), "id": b.id}
+                    {
+                        "type": b.block_type,
+                        "value": WagtailImageSerializer(b.value),
+                        "id": b.id,
+                    }
                 )
             elif b.block_type == "video":
                 from wagtail.embeds.embeds import get_embed

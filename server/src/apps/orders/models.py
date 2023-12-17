@@ -2,6 +2,7 @@ from typing import Any
 
 from django.db import models
 from django.db.models import QuerySet
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import ArrayField
 from django_enum_choices.fields import EnumChoiceField
@@ -9,6 +10,10 @@ from django_enum_choices.fields import EnumChoiceField
 from src.apps.base.models import PKIDMixin, TimeStampedMixin
 from src.apps.products.models import Product
 from src.other.enums import OrderStatus, DocumentType
+
+
+# class OrderedProduct(PKIDMixin, TimeStampedMixin):
+#     product = models.ForeignKey(to="products.Product", related_name="ordered_products", on_delete=models.CASCADE,)
 
 
 class Order(PKIDMixin, TimeStampedMixin):
@@ -34,9 +39,11 @@ class Order(PKIDMixin, TimeStampedMixin):
         null=True,
         verbose_name=_("Адрес"),
     )
-    products = models.ManyToManyField(
-        to="products.Product", related_name="orders", verbose_name=_("Товары")
-    )
+    # products = models.ManyToManyField(
+    #     to="products.Product", related_name="orders", verbose_name=_("Товары")
+    # )
+    # product_id: str, count: int, current_price: float
+    products = models.JSONField(verbose_name=_("Товары"), null=True, blank=True)
     name = models.CharField(max_length=100, verbose_name=_("Имя"))
     surname = models.CharField(max_length=100, verbose_name=_("Фамилия"))
     patronymic = models.CharField(max_length=100, verbose_name=_("Отчество"))
@@ -48,10 +55,47 @@ class Order(PKIDMixin, TimeStampedMixin):
     status = EnumChoiceField(
         OrderStatus, default=OrderStatus.NEW, verbose_name=_("Статус")
     )
+    accepted = models.BooleanField(default=False, verbose_name=_("Подтвержден"))
+    accept_date = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Время подтверждения")
+    )
 
     class Meta:
         verbose_name = _("Заказ")
         verbose_name_plural = _("Заказы")
+
+    def accept_order(self) -> None:
+        self.accepted = True
+        self.accept_date = timezone.localtime(timezone.now())
+        self.save()
+
+    @property
+    def products_count(self) -> int:
+        products: dict | None = self.products
+        if products is None:
+            return 0
+        return len(products)
+
+    @property
+    def total_product_count(self) -> int:
+        products: dict | None = self.products
+        if products is None:
+            return 0
+        total_count = 0
+        for product_id, product in products.items():
+            total_count += product["count"]
+        return total_count
+
+    @property
+    def total_price(self) -> float:
+        products: dict | None = self.products
+        if products is None:
+            return 0
+        total_price_list: float = 0
+        for product_id, product in products.items():
+            product_price: float = product["count"] * product["current_price"]
+            total_price_list += product_price
+        return total_price_list
 
     def __str__(self) -> str:
         return f"Заказ {self.profile}"

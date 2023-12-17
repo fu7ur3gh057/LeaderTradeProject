@@ -18,6 +18,7 @@ class PortfolioAdmin(admin.ModelAdmin):
     list_display = ["pk_id", "make", "product", "created_at"]
     list_display_links = ["pk_id", "make", "product"]
     search_fields = ["make"]
+    raw_id_fields = ("product",)
     inlines = [
         PortfolioImageInline,
     ]

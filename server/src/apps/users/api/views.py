@@ -40,10 +40,18 @@ class VerifyCodeAPIView(generics.GenericAPIView):
         else:
             user = is_exists
         verification = user.verification
-        verification.generate_code()
-        task_data = {"phone_number": phone_number, "verify_code": verification.sms_code}
-        broadcast_sms_task.delay(task_data)
-        return Response(True, status=status.HTTP_200_OK)
+        try:
+            verification.generate_token()
+            task_data = {
+                "phone_number": phone_number,
+                "verify_code": verification.token,
+            }
+            broadcast_sms_task.delay(task_data)
+            return Response(True, status=status.HTTP_200_OK)
+        except Exception:
+            return Response(
+                "Token generation limit exception", status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class LoginAPIView(generics.GenericAPIView):
@@ -55,7 +63,7 @@ class LoginAPIView(generics.GenericAPIView):
         phone_number = data["phone_number"]
         verify_code = data["verify_code"]
         user = get_object_or_404(User, phone_number=phone_number)
-        if verify_code == user.verification.sms_code:
+        if verify_code == user.verification.token:
             tokens = RefreshToken.for_user(user)
             data = {"refresh": f"{tokens}", "access": f"{tokens.access_token}"}
             return Response(data, status=status.HTTP_200_OK)

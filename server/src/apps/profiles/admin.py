@@ -8,12 +8,14 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display_links = ["pk_id", "user", "email"]
     list_filter = ["is_legal"]
     search_fields = ["email", "full_name"]
+    raw_id_fields = ("user",)
 
 
 class LegalCardAdmin(admin.ModelAdmin):
     list_display = ["pk_id", "profile", "title", "email", "legal_address", "created_at"]
     list_display_links = ["pk_id", "email"]
     search_fields = ["email", "title"]
+    raw_id_fields = ("profile",)
 
 
 admin.site.register(Profile, ProfileAdmin)

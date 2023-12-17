@@ -51,8 +51,9 @@ class UserAdmin(BaseUserAdmin):
 
 
 class VerificationAdmin(admin.ModelAdmin):
-    list_display = ["pk_id", "user", "sms_code"]
+    list_display = ["pk_id", "user", "token", "attempt_count", "expire_date"]
     list_display_links = ["pk_id", "user"]
+    raw_id_fields = ("user",)
 
 
 admin.site.register(User, UserAdmin)

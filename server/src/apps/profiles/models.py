@@ -29,7 +29,7 @@ class Profile(PKIDMixin, TimeStampedMixin):
         verbose_name_plural = _("Профиль")
 
     def __str__(self) -> str:
-        return self.full_name
+        return f"{self.user.phone_number}"
 
 
 class LegalCard(PKIDMixin, TimeStampedMixin):

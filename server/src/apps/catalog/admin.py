@@ -13,6 +13,7 @@ class ModelAdmin(admin.ModelAdmin):
     list_display = ["pk_id", "make", "title"]
     list_display_links = ["pk_id", "make"]
     search_fields = ["make", "title"]
+    raw_id_fields = ("make",)
 
 
 class BrandAdmin(admin.ModelAdmin):
