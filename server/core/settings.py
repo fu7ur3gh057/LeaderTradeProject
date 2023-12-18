@@ -17,6 +17,8 @@ SECRET_KEY = "django-insecure-ykk2(twh5mv#atw0u*&u&f)_evbzmfl=y=)3c(b04ep@(m@eq-
 WSDL_URL = "tmp/4tochki.wsdl"
 API_URL = "api/v3"
 
+CHUNK_STEP = 200
+
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]

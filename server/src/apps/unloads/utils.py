@@ -1,3 +1,4 @@
+from bulk_update.helper import bulk_update
 from django.db.models import Q
 from zeep import Client
 
@@ -34,8 +35,8 @@ def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
         price=price_params.price_rozn,
         rest=rest_count,
         type=ProductType.RIMS,
+        ext_data=data.model_dump(),
     )
-    rim.ext_data = data.model_dump()
     rim.save()
     return data.code
 
@@ -48,7 +49,7 @@ def update_fortochki_price_info(
     product.rest = rest_count
     product.price = price_params.price_rozn
     product.ext_data["price"] = price_params.price
-    product.save()
+    bulk_update([product], update_fields=["rest", "price", "ext_data"])
 
 
 def update_fortochki_rim_info(data: RimContainerSchema) -> None:
@@ -104,8 +105,6 @@ def update_fortochki_tire_info(data: TyreContainerSchema) -> None:
 
 
 # STARCO
-
-
 def _get_model_name_or_none(data) -> str:
     if data.Brand == "" or data.Brand is None:
         return ""

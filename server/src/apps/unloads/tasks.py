@@ -3,6 +3,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.db.models import Q, F
 
+from core.settings import CHUNK_STEP
 from src.api.requests.fortochki_requests import (
     refresh_wsdl_file,
     find_rim_list,
@@ -55,13 +56,16 @@ def fortochki_unload_rims_task() -> None:
     code_list = []
     rim_list = find_rim_list()
     logger.info(f"founded disk list: {len(rim_list)}")
+    rim_products = (
+        Product.objects.all()
+        .annotate(code=F("ext_data__code"))
+        .filter(type=ProductType.RIMS)
+    )
     # create or update rim
     for rim_data in rim_list:
         slug = slugify(rim_data.name)
-        filter_query = Q(type=ProductType.RIMS) & (
-            Q(ext_data__code=rim_data.code) | Q(slug=slug)
-        )
-        founded_rim = Product.objects.filter(filter_query).first()
+        filter_query = Q(code=rim_data.code) | Q(slug=slug)
+        founded_rim = rim_products.filter(filter_query).first()
         if founded_rim is not None:
             update_fortochki_price_info(data=rim_data, product=founded_rim)
         else:
@@ -70,8 +74,9 @@ def fortochki_unload_rims_task() -> None:
                 code_list.append(code)
             except Exception as ex:
                 logger.info(ex)
-    step = 200
-    chunked_list = [code_list[i : i + step] for i in range(0, len(code_list), step)]
+    chunked_list = [
+        code_list[i : i + CHUNK_STEP] for i in range(0, len(code_list), CHUNK_STEP)
+    ]
     logger.info(f"chunked list size {len(chunked_list)}")
     any([fortochki_get_rim_info_task.delay(i) for i in chunked_list])
     return None
@@ -92,10 +97,16 @@ def fortochki_unload_tires_task() -> None:
     code_list = []
     tire_list = find_tire_list()
     logger.info(f"founded tire list: {len(tire_list)}")
+    tire_products = (
+        Product.objects.all()
+        .annotate(code=F("ext_data__code"))
+        .filter(type=ProductType.TIRES)
+    )
     # create or update tire
     for tire_data in tire_list:
-        filter_query = Q(type=ProductType.TIRES) & Q(ext_data__code=tire_data.code)
-        founded_tire = Product.objects.filter(filter_query).first()
+        slug = slugify(tire_data.name)
+        filter_query = Q(code=tire_data.code) | Q(slug=slug)
+        founded_tire = tire_products.filter(filter_query).first()
         if founded_tire is not None:
             update_fortochki_price_info(data=tire_data, product=founded_tire)
         else:
@@ -104,8 +115,9 @@ def fortochki_unload_tires_task() -> None:
                 code_list.append(code)
             except Exception as ex:
                 logger.info(ex)
-    step = 200
-    chunked_list = [code_list[i : i + step] for i in range(0, len(code_list), step)]
+    chunked_list = [
+        code_list[i : i + CHUNK_STEP] for i in range(0, len(code_list), CHUNK_STEP)
+    ]
     logger.info(f"chunked list size {len(chunked_list)}")
     any([fortochki_get_tire_info_task.delay(i) for i in chunked_list])
     return None
@@ -170,35 +182,43 @@ def starco_get_rim_task() -> None:
 @shared_task(name="starco_get_stock_beat")
 def starco_get_stock_task() -> None:
     stock_list = get_starco_stock()
-    for stock_data in stock_list:
-        founded_product = Product.objects.filter(
-            ext_data__product_no=stock_data.product_no
-        ).first()
-        if founded_product:
-            current_rest_count = (
-                stock_data.BEL_STOCK
-                + stock_data.CEL_STOCK
-                + stock_data.EKT_STOCK
-                + stock_data.KAZ_STOCK
-                + stock_data.MOS_STOCK
-                + stock_data.UKR_STOCK
+    logger.info("finished getting starco stock ...")
+    chunked_stock_list = [
+        stock_list[i : i + CHUNK_STEP] for i in range(0, len(stock_list), CHUNK_STEP)
+    ]
+    products = Product.objects.annotate(product_no=F("ext_data__product_no"))
+    for chunked_stock in chunked_stock_list:
+        updated_products: list[Product] = []
+        for stock_data in chunked_stock:
+            founded_product = (
+                products.filter(product_no=stock_data.product_no).only("rest").first()
             )
-            founded_product.rest = current_rest_count
-            founded_product.save()
+            if founded_product:
+                current_rest_count = (
+                    stock_data.BEL_STOCK
+                    + stock_data.CEL_STOCK
+                    + stock_data.EKT_STOCK
+                    + stock_data.KAZ_STOCK
+                    + stock_data.MOS_STOCK
+                    + stock_data.UKR_STOCK
+                )
+                founded_product.rest = current_rest_count
+                updated_products.append(founded_product)
+        bulk_update(updated_products, update_fields=["rest"])
     starco_get_price_list_task.delay()
     return None
 
 
 @shared_task(name="starco_get_price_list_task")
 def starco_get_price_list_task() -> None:
-    updated_products: list[Product] = []
-    step = 200
     price_list = get_starco_prices()
+    logger.info("finished getting starco price list ...")
     chunked_price_list = [
-        price_list[i : i + step] for i in range(0, len(price_list), step)
+        price_list[i : i + CHUNK_STEP] for i in range(0, len(price_list), CHUNK_STEP)
     ]
     products = Product.objects.annotate(product_no=F("ext_data__product_no"))
     for chunk_prices in chunked_price_list:
+        updated_products: list[Product] = []
         for price in chunk_prices:
             founded_product = (
                 products.filter(product_no=price.product_no).only("price").first()
@@ -207,12 +227,4 @@ def starco_get_price_list_task() -> None:
                 founded_product.price = price.price
                 updated_products.append(founded_product)
         bulk_update(updated_products, update_fields=["price"])
-        updated_products.clear()
-    # for price in price_list:
-    #     founded_product = Product.objects.filter(
-    #         ext_data__product_no=price.product_no
-    #     ).first()
-    #     if founded_product:
-    #         founded_product.price = price.price
-    #         founded_product.save()
     return None
