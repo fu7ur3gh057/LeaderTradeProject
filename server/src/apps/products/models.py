@@ -10,7 +10,7 @@ from mptt.models import MPTTModel
 from src.apps.base.models import PKIDMixin, TimeStampedMixin
 from src.apps.catalog.models import Brand
 from src.apps.profiles.models import Profile
-from src.other.enums import ProductType, RimType
+from src.other.enums import ProductType, RimType, UnloadServiceType
 from src.utils.slug_utils import slugify
 
 
@@ -163,6 +163,7 @@ class Product(PKIDMixin, TimeStampedMixin):
     ext_data = models.JSONField(
         blank=True, null=True, verbose_name=_("Дополнительная информация")
     )
+    unload_service = EnumChoiceField(UnloadServiceType, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Товар")

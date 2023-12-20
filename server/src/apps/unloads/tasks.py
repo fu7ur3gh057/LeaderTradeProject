@@ -216,15 +216,26 @@ def starco_get_price_list_task() -> None:
     chunked_price_list = [
         price_list[i : i + CHUNK_STEP] for i in range(0, len(price_list), CHUNK_STEP)
     ]
-    products = Product.objects.annotate(product_no=F("ext_data__product_no"))
     for chunk_prices in chunked_price_list:
+        product_no_list = [pr.product_no for pr in chunk_prices]
+        products = (
+            Product.objects.filter(unload_service=UnloadServiceType.starco)
+            .annotate(product_no=F("ext_data__product_no"))
+            .filter(product_no__in=product_no_list)
+        )
         updated_products: list[Product] = []
         for price in chunk_prices:
-            founded_product = (
-                products.filter(product_no=price.product_no).only("price").first()
-            )
-            if founded_product:
-                founded_product.price = price.price
-                updated_products.append(founded_product)
+            for product in products:
+                if product.product_no == price.product_no:
+                    product.price = price.price
+                    updated_products.append(product)
         bulk_update(updated_products, update_fields=["price"])
     return None
+
+
+# founded_product = (
+#     products.filter(product_no=price.product_no).only("price").first()
+# )
+# if founded_product:
+#     founded_product.price = price.price
+#     updated_products.append(founded_product)

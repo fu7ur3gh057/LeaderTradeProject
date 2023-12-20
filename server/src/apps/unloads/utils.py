@@ -11,7 +11,7 @@ from src.api.schemas.fortochki_schemas import (
 from src.api.schemas.starco_schemas import StarcoRimSchema, StarcoTyreSchema
 from src.apps.catalog.models import Brand
 from src.apps.products.models import Category, Product
-from src.other.enums import ProductType
+from src.other.enums import ProductType, UnloadServiceType
 from src.utils.number_utils import float_or_none, int_or_none
 
 
@@ -36,6 +36,7 @@ def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
         rest=rest_count,
         type=ProductType.RIMS,
         ext_data=data.model_dump(),
+        unload_service=UnloadServiceType.fortochki,
     )
     rim.save()
     return data.code
@@ -82,6 +83,7 @@ def create_fortochki_tire(data: TyrePriceRestSchema) -> str | None:
         price=price_params.price_rozn,
         rest=rest_count,
         type=ProductType.TIRES,
+        unload_service=UnloadServiceType.fortochki,
     )
     tire.ext_data = data.model_dump()
     tire.save()
@@ -138,6 +140,7 @@ def starco_create_rim(data: StarcoRimSchema) -> None:
             size=float_or_none(data.Inch),
             brand=brand,
             ext_data=data.model_dump(),
+            unload_service=UnloadServiceType.starco,
         )
     except Exception as ex:
         print(ex)
@@ -187,6 +190,7 @@ def starco_create_tire(data: StarcoTyreSchema) -> None:
             size=size,
             brand=brand,
             ext_data=data.model_dump(),
+            unload_service=UnloadServiceType.starco,
         )
     except Exception as ex:
         print(ex)
