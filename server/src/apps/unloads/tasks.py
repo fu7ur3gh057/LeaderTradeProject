@@ -186,24 +186,28 @@ def starco_get_stock_task() -> None:
     chunked_stock_list = [
         stock_list[i : i + CHUNK_STEP] for i in range(0, len(stock_list), CHUNK_STEP)
     ]
-    products = Product.objects.annotate(product_no=F("ext_data__product_no"))
-    for chunked_stock in chunked_stock_list:
+    for chunk_stocks in chunked_stock_list:
+        product_no_list = [pr.product_no for pr in chunk_stocks]
+        products = (
+            Product.objects.filter(unload_service=UnloadServiceType.starco)
+            .annotate(product_no=F("ext_data__product_no"))
+            .filter(product_no__in=product_no_list)
+        )
         updated_products: list[Product] = []
-        for stock_data in chunked_stock:
-            founded_product = (
-                products.filter(product_no=stock_data.product_no).only("rest").first()
-            )
-            if founded_product:
-                current_rest_count = (
-                    stock_data.BEL_STOCK
-                    + stock_data.CEL_STOCK
-                    + stock_data.EKT_STOCK
-                    + stock_data.KAZ_STOCK
-                    + stock_data.MOS_STOCK
-                    + stock_data.UKR_STOCK
-                )
-                founded_product.rest = current_rest_count
-                updated_products.append(founded_product)
+        for stock in chunk_stocks:
+            for product in products:
+                if product.product_no == stock.product_no:
+                    current_rest_count = (
+                        stock.BEL_STOCK
+                        + stock.CEL_STOCK
+                        + stock.EKT_STOCK
+                        + stock.KAZ_STOCK
+                        + stock.MOS_STOCK
+                        + stock.UKR_STOCK
+                    )
+                    product.rest = current_rest_count
+                    updated_products.append(product)
+                    break
         bulk_update(updated_products, update_fields=["rest"])
     starco_get_price_list_task.delay()
     return None
@@ -229,13 +233,6 @@ def starco_get_price_list_task() -> None:
                 if product.product_no == price.product_no:
                     product.price = price.price
                     updated_products.append(product)
+                    break
         bulk_update(updated_products, update_fields=["price"])
     return None
-
-
-# founded_product = (
-#     products.filter(product_no=price.product_no).only("price").first()
-# )
-# if founded_product:
-#     founded_product.price = price.price
-#     updated_products.append(founded_product)
