@@ -42,46 +42,51 @@ def _get_tire_pages_count() -> int:
     return int(tires.totalPages)
 
 
-def _get_rim_pages_count() -> int:
-    global _client
-    disks = _client.service.GetFindDisk(
-        login=_username, password=_password, filter={"diameter_min": 14}
-    )
-    return int(disks.totalPages)
-
-
 def find_rim_list() -> list[DiskPriceRestSchema]:
     global _client
     rim_list = []
-    pages_count = _get_rim_pages_count()
     print("Finding Rims Data..")
-    for _ in range(pages_count):
+    pages_count = None
+    current_page = -1
+    while pages_count is None or current_page < pages_count:
+        current_page += 1
+        if current_page == pages_count:
+            break
         rims = _client.service.GetFindDisk(
             login=_username,
             password=_password,
             filter={"diameter_min": 14},
-            page=_,
-            pageSize=50,
+            page=current_page,
+            pageSize=2000,
         )
+        
+        if pages_count == None:
+            pages_count = int(rims.totalPages)
+
         for rim in rims.price_rest_list.DiskPriceRest:
             rim_schema = DiskPriceRestSchema.to_pydantic(data=rim)
             rim_list.append(rim_schema)
-    return rim_list
 
 
 def find_tire_list() -> list[TyrePriceRestSchema]:
     global _client
     tire_list = []
-    pages_count = _get_tire_pages_count()
     print("Finding Tires Data..")
-    for _ in range(5):
+    pages_count = None
+    current_page = -1
+    while pages_count is None or current_page < pages_count:
+        current_page += 1
+        if current_page == pages_count:
+            break
         tires = _client.service.GetFindTyre(
             login=_username,
             password=_password,
             filter={"diameter_min": 14},
-            page=_,
-            pageSize=50,
+            page=current_page,
+            pageSize=2000,
         )
+        if pages_count == None:
+            pages_count = int(tires.totalPages)
         for tire in tires.price_rest_list.TyrePriceRest:
             tire_schema = TyrePriceRestSchema.to_pydantic(data=tire)
             tire_list.append(tire_schema)
@@ -112,7 +117,7 @@ def get_tire_goods_info(code_list: str) -> list[TyreContainerSchema]:
     return result_list
 
 
-def convert_code_list(code_list: list[str]) -> str:
+def ¬(code_list: list[str]) -> str:
     global _client
     d_type = _client.get_type("ns3:ArrayOfstring")
     arr = d_type()
