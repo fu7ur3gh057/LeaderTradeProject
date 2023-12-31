@@ -16,7 +16,7 @@ from src.apps.orders.api.serializers import (
     DocumentSerializer,
 )
 from src.apps.orders.models import Order, Document
-from src.apps.products.models import Product
+from products.models import Product
 
 
 class BasketAPIView(generics.GenericAPIView):

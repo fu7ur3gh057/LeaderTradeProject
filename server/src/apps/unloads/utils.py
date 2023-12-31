@@ -10,7 +10,7 @@ from src.api.schemas.fortochki_schemas import (
 )
 from src.api.schemas.starco_schemas import StarcoRimSchema, StarcoTyreSchema
 from src.apps.catalog.models import Brand
-from src.apps.products.models import Category, Product
+from products.models import Category, Product
 from src.other.enums import ProductType, UnloadServiceType
 from src.utils.number_utils import float_or_none, int_or_none
 
@@ -20,6 +20,25 @@ def get_or_create_brand(title: str) -> Brand:
     if brand is None:
         brand = Brand.objects.create(title=title)
     return brand
+
+
+def prepare_fortochki_rim(data: DiskPriceRestSchema, category) -> str | None:
+    images = [data.img_big_my, data.img_big_pish, data.img_small]
+    price_params = data.whpr.wh_price_rest[0]
+    rest_count = sum([i.rest for i in data.whpr.wh_price_rest])
+    rim = Product(
+        title=data.name,
+        category=category,
+        color=data.color,
+        model=data.model,
+        price=price_params.price_rozn,
+        rest=rest_count,
+        type=ProductType.RIMS,
+        ext_data=data.model_dump(),
+        image=images[0] if images else None,
+        unload_service=UnloadServiceType.fortochki,
+    )
+    return rim
 
 
 def create_fortochki_rim(data: DiskPriceRestSchema) -> str | None:
@@ -50,24 +69,18 @@ def update_fortochki_price_info(
     product.rest = rest_count
     product.price = price_params.price_rozn
     product.ext_data["price"] = price_params.price
-    bulk_update([product], update_fields=["rest", "price", "ext_data"])
+    return product
 
 
-def update_fortochki_rim_info(data: RimContainerSchema) -> None:
-    filter_query = Q(type=ProductType.RIMS) & Q(ext_data__code=data.code)
-    rim = Product.objects.filter(filter_query).first()
-    if rim is None:
-        return None
-    brand = get_or_create_brand(title=data.brand)
+def update_fortochki_rim_info(data: RimContainerSchema, rim: Product) -> None:
     rim.dia = data.dia
     rim.et = data.et
     rim.pcd = data.bolts_spacing
     rim.unite_pcd = data.bolts_count
     rim.bolts = data.bolts_spacing
-    rim.bolts_2 = data.bolts_spacing2
+    rim.bolts2 = data.bolts_spacing2
     rim.width = data.width
-    rim.brand = brand
-    rim.save()
+    return rim
 
 
 def create_fortochki_tire(data: TyrePriceRestSchema) -> str | None:
@@ -198,3 +211,9 @@ def starco_create_tire(data: StarcoTyreSchema) -> None:
 
 def update_price():
     pass
+
+
+def chunks(lst, n:int):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]

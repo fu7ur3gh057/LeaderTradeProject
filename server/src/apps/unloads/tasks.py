@@ -4,6 +4,7 @@ from celery.utils.log import get_task_logger
 from django.db.models import Q, F
 
 from core.settings import CHUNK_STEP
+from src.apps.catalog.models import Brand
 from src.api.requests.fortochki_requests import (
     refresh_wsdl_file,
     find_rim_list,
@@ -18,7 +19,7 @@ from src.api.requests.starco_requests import (
     get_starco_prices,
     get_starco_tyres,
 )
-from src.apps.products.models import Product
+from products.models import Product, Category
 from src.apps.unloads.models import UnloadScheduler
 from src.apps.unloads.utils import (
     update_fortochki_price_info,
@@ -28,6 +29,8 @@ from src.apps.unloads.utils import (
     update_fortochki_tire_info,
     starco_create_rim,
     starco_create_tire,
+    prepare_fortochki_rim,
+    chunks,
 )
 from src.other.enums import ProductType, UnloadServiceType
 from src.utils.slug_utils import slugify
@@ -61,24 +64,44 @@ def fortochki_unload_rims_task() -> None:
         .annotate(code=F("ext_data__code"))
         .filter(type=ProductType.RIMS)
     )
+    category = Category.objects.filter(title=ProductType.RIMS).first()
     # create or update rim
-    for rim_data in rim_list:
-        slug = slugify(rim_data.name)
-        filter_query = Q(code=rim_data.code) | Q(slug=slug)
-        founded_rim = rim_products.filter(filter_query).first()
-        if founded_rim is not None:
-            update_fortochki_price_info(data=rim_data, product=founded_rim)
-        else:
-            try:
-                code = create_fortochki_rim(data=rim_data)
-                code_list.append(code)
-            except Exception as ex:
-                logger.info(ex)
-    chunked_list = [
-        code_list[i : i + CHUNK_STEP] for i in range(0, len(code_list), CHUNK_STEP)
-    ]
-    logger.info(f"chunked list size {len(chunked_list)}")
-    any([fortochki_get_rim_info_task.delay(i) for i in chunked_list])
+    for rims_chunk in chunks(rim_list, CHUNK_STEP):
+        filter_query = Q()
+        for rim_data in rims_chunk:
+            slug = slugify(rim_data.name)
+            rim_data.slug = slug
+            if rim_data.code:
+                filter_query |= Q(ext_data__code=rim_data.code)
+            else:
+                filter_query |= Q(slug=slug)
+
+        founded_rim = {
+            it.code or it.slug: it
+            for it in rim_products.filter(filter_query).annotate(
+                code=F("ext_data__code")
+            )
+        }
+        create_lst = []
+        update_lst = []
+        for rim_data in rims_chunk:
+            product = founded_rim.get(rim_data.code or rim_data.slug)
+            if product:
+                product = update_fortochki_price_info(rim_data, product)
+                update_lst.append(product)
+            else:
+                create_lst.append(rim_data)
+
+        if update_lst:
+            bulk_update(update_lst, update_fields=["rest", "price", "ext_data"])
+
+        if create_lst:
+            products = [prepare_fortochki_rim(it, category) for it in create_lst]
+            products = Product.objects.bulk_create(products)
+            for chunk in chunks(products, 200):
+                fortochki_get_rim_info_task.delay(
+                    [p.ext_data["code"] for p in products if p.ext_data.get("code")]
+                )
     return None
 
 
@@ -86,9 +109,35 @@ def fortochki_unload_rims_task() -> None:
 def fortochki_get_rim_info_task(code_list: list) -> None:
     logger.info(f"start get rim goods info...")
     converted_code_list = convert_code_list(code_list=code_list)
-    info_list = get_rim_goods_info(code_list=converted_code_list)
-    for info in info_list:
-        update_fortochki_rim_info(data=info)
+    info_list = {
+        it.code: it for it in get_rim_goods_info(code_list=converted_code_list)
+    }
+    products = Product.objects.annotate(code=F("ext_data__code")).filter(
+        type=ProductType.RIMS, ext_data__code__in=info_list.keys()
+    )
+    brands = {brand.title: brand for brand in Brand.objects.all()}
+    for p in products:
+        info = info_list[p.code]
+        brand_name = info.brand.upper()
+        brand = brands.get(brand_name)
+        if not brand:
+            brand = Brand.objects.create(title=brand_name)
+            brands[brand_name] = brand
+        p.brand = brand
+        update_fortochki_rim_info(data=info, rim=p)
+    bulk_update(
+        products,
+        update_fields=[
+            "dia",
+            "et",
+            "pcd",
+            "unite_pcd",
+            "bolts",
+            "bolts2",
+            "width",
+            "brand",
+        ],
+    )
     return None
 
 

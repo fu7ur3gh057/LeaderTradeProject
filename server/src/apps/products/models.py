@@ -80,7 +80,7 @@ class Product(PKIDMixin, TimeStampedMixin):
         ProductType, default=ProductType.RIMS, verbose_name=_("Тип товара")
     )
     rim_type = EnumChoiceField(
-        RimType, default=None, null=True, blank=True, verbose_name=_("Тип дисков")
+        RimType, default=0, null=True, blank=True, verbose_name=_("Тип дисков")
     )
     color = models.CharField(
         max_length=100, verbose_name=_("Цвет"), blank=True, null=True
@@ -157,7 +157,8 @@ class Product(PKIDMixin, TimeStampedMixin):
     )
     views = models.IntegerField(default=0, verbose_name=_("Просмотры"))
     image = models.ImageField(
-        upload_to="products/", blank=True, null=True, verbose_name=_("Изображение")
+        upload_to="products/", blank=True, null=True, verbose_name=_("Изображение"),
+        max_length=255
     )
     rest = models.IntegerField(default=0, verbose_name=_("Остаток"))
     ext_data = models.JSONField(

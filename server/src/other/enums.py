@@ -17,6 +17,8 @@ class TaskStatus(Enum):
 
 
 class UnloadServiceType(Enum):
+    empty = None
+    empty_str = ""
     fortochki = "FORTOCHKI"
     starco = "STARCO"
 

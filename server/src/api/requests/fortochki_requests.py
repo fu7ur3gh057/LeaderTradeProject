@@ -115,7 +115,7 @@ def get_tire_goods_info(code_list: str) -> list[TyreContainerSchema]:
     return result_list
 
 
-def ¬(code_list: list[str]) -> str:
+def convert_code_list(code_list: list[str]) -> str:
     global _client
     d_type = _client.get_type("ns3:ArrayOfstring")
     arr = d_type()

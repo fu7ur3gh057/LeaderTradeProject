@@ -4,16 +4,16 @@ from rest_framework import generics, status, filters, permissions
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.apps.products.api.filters import ProductFilter
-from src.apps.products.api.pagination import ProductPagination
-from src.apps.products.api.serializers import (
+from products.api.filters import ProductFilter
+from products.api.pagination import ProductPagination
+from products.api.serializers import (
     CategoryTreeSerializer,
     ProductSerializer,
     CategorySerializer,
     ProductDetailSerializer,
     ProductBrandSerializer,
 )
-from src.apps.products.models import Category, Product
+from products.models import Category, Product
 from src.services.redis.deps import redis_connection
 
 

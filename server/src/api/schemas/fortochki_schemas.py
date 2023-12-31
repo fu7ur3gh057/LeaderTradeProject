@@ -65,6 +65,7 @@ class ArrayOfPriceSchema(BaseModel):
 
 class DiskPriceRestSchema(BaseModel):
     code: str | None = None
+    slug: str | None = None
     color: str | None = None
     img_big_my: str | None = None
     img_big_pish: str | None = None

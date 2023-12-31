@@ -31,3 +31,6 @@ class UserManager(BaseUserManager):
         user.is_verified = True
         user.save()
         return user
+
+    def create_superuser(self, phone_number, password):
+        self.create_admin(phone_number, password)

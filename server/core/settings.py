@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 from datetime import timedelta
 import logging
@@ -9,6 +10,7 @@ from django.utils.log import DEFAULT_LOGGING
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASE_DIR / 'src/apps'))
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -17,7 +19,7 @@ SECRET_KEY = "django-insecure-ykk2(twh5mv#atw0u*&u&f)_evbzmfl=y=)3c(b04ep@(m@eq-
 WSDL_URL = "tmp/4tochki.wsdl"
 API_URL = "api/v3"
 
-CHUNK_STEP = 200
+CHUNK_STEP = 1000
 
 DEBUG = True
 
@@ -80,18 +82,19 @@ WAGTAIL_APPS = [
 ]
 
 LOCAL_APPS = [
-    "src.apps.base.apps.BaseConfig",
-    "src.apps.users.apps.UsersConfig",
-    "src.apps.profiles.apps.ProfilesConfig",
-    "src.apps.locations.apps.LocationsConfig",
-    "src.apps.catalog.apps.CatalogConfig",
-    "src.apps.interface.apps.InterfaceConfig",
-    "src.apps.products.apps.ProductsConfig",
-    "src.apps.billing.apps.BillingConfig",
-    "src.apps.orders.apps.OrdersConfig",
-    "src.apps.actions.apps.ActionsConfig",
-    "src.apps.unloads.apps.UnloadsConfig",
-    "src.apps.news.apps.NewsConfig",
+    "base.apps.BaseConfig",
+    "users.apps.UsersConfig",
+    "profiles.apps.ProfilesConfig",
+    "locations.apps.LocationsConfig",
+    "catalog.apps.CatalogConfig",
+    "interface.apps.InterfaceConfig",
+    "products.apps.ProductsConfig",
+    "billing.apps.BillingConfig",
+    "orders.apps.OrdersConfig",
+    "actions.apps.ActionsConfig",
+    "unloads.apps.UnloadsConfig",
+    "news.apps.NewsConfig",
+    "web.apps.WebConfig"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + LOCAL_APPS
@@ -110,6 +113,16 @@ MIDDLEWARE = [
 ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'APP_DIRS': False,
+        'DIRS': [
+            BASE_DIR / 'apps/web/templates',
+        ],
+        'OPTIONS': {
+            "environment": 'src.apps.web.jinja.environment'
+        }
+    },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
