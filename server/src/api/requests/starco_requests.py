@@ -12,9 +12,7 @@ from src.api.schemas.starco_schemas import (
     StarcoPriceSchema,
 )
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, "../../.env"))
+from core.settings import env
 
 _base_url = env("STARCO_SERVICE_URL")
 _username = env("STARCO_SERVICE_LOGIN")

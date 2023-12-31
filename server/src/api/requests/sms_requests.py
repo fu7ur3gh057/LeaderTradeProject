@@ -4,9 +4,7 @@ from pathlib import Path
 import environ
 import requests
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, "../../.env"))
+from core.settings import env
 
 _username = env("SMS_SERVICE_LOGIN")
 _password = env("SMS_SERVICE_PASSWORD")
