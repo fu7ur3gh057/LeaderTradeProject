@@ -94,6 +94,7 @@ LOCAL_APPS = [
     "actions.apps.ActionsConfig",
     "unloads.apps.UnloadsConfig",
     "news.apps.NewsConfig",
+    "promo",
     "web.apps.WebConfig"
 ]
 
@@ -114,13 +115,19 @@ ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        "NAME": "jinja2",
+        "BACKEND": "django.template.backends.jinja2.Jinja2",
         'APP_DIRS': False,
         'DIRS': [
-            BASE_DIR / 'apps/web/templates',
+            BASE_DIR / 'src/apps/web/jtemplates',
         ],
         'OPTIONS': {
-            "environment": 'src.apps.web.jinja.environment'
+            "environment": 'src.apps.web.jinja.environment',
+            'extensions': [
+                'wagtail.jinja2tags.core',
+                'wagtail.admin.jinja2tags.userbar',
+                'wagtail.images.jinja2tags.images',
+            ],
         }
     },
     {
@@ -177,9 +184,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 

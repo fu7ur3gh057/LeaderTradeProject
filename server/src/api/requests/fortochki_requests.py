@@ -64,6 +64,7 @@ def find_rim_list() -> list[DiskPriceRestSchema]:
         for rim in rims.price_rest_list.DiskPriceRest:
             rim_schema = DiskPriceRestSchema.to_pydantic(data=rim)
             rim_list.append(rim_schema)
+    return rim_list
 
 
 def find_tire_list() -> list[TyrePriceRestSchema]:
