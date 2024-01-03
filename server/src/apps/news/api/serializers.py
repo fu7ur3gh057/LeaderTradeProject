@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from django_enum_choices.serializers import EnumChoiceField
 from rest_framework import serializers
 
-from src.apps.news.models import Post
+from news.models import Post
 from products.models import Product
 from src.utils.news_utils import video_thumbnail, get_embed_video_link, get_youtube_id
 

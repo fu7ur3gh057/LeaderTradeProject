@@ -450,6 +450,20 @@ django-colorfield = ">=0.8.0,<1.0.0"
 python-slugify = ">=7.0.0,<9.0.0"
 
 [[package]]
+name = "django-appconf"
+version = "1.0.6"
+description = "A helper class for handling configuration defaults of packaged apps gracefully."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "django-appconf-1.0.6.tar.gz", hash = "sha256:cfe87ea827c4ee04b9a70fab90b86d704cb02f2981f89da8423cb0fabf88efbf"},
+    {file = "django_appconf-1.0.6-py3-none-any.whl", hash = "sha256:c3ae442fba1ff7ec830412c5184b17169a7a1e71cf0864a4c3f93cf4c98a1993"},
+]
+
+[package.dependencies]
+django = "*"
+
+[[package]]
 name = "django-bulk-update"
 version = "2.2.0"
 description = "Bulk update using one query over Django ORM."
@@ -608,24 +622,24 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-flat-responsive"
-version = "2.0"
-description = "An extension for Django admin that makes interface mobile friendly."
+name = "django-imagekit"
+version = "5.0.0"
+description = "Automated image processing for Django models."
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-flat-responsive-2.0.tar.gz", hash = "sha256:451caa2700c541b52fb7ce2d34d3d8dee9e980cf29f5463bc8a8c6256a1a6474"},
+    {file = "django-imagekit-5.0.0.tar.gz", hash = "sha256:aae9f74a8e9b6ceb5d15f7d8e266302901e76d9f532c78bd5135cb0fa206a6b0"},
+    {file = "django_imagekit-5.0.0-py3-none-any.whl", hash = "sha256:a8e77ed6549751026a51f961bb2cd5fda739be691496da8eecbe68ffb966c261"},
 ]
 
-[[package]]
-name = "django-flat-theme"
-version = "1.1.4"
-description = "A flat theme for Django admin interface. Modern, fresh, simple."
-optional = false
-python-versions = "*"
-files = [
-    {file = "django-flat-theme-1.1.4.tar.gz", hash = "sha256:6b522d8c2b5a8228b30947fb002eff2868da076e9beacf3e798410e5c1a2d849"},
-]
+[package.dependencies]
+django-appconf = "*"
+pilkit = "*"
+
+[package.extras]
+async = ["django-celery (>=3.0)"]
+async-dramatiq = ["django-dramatiq (>=0.4.0)"]
+async-rq = ["django-rq (>=0.6.0)"]
 
 [[package]]
 name = "django-jazzmin"
@@ -1310,6 +1324,20 @@ files = [
     {file = "phonenumbers-8.13.18-py2.py3-none-any.whl", hash = "sha256:3d802739a22592e4127139349937753dee9b6a20bdd5d56847cd885bdc766b1f"},
     {file = "phonenumbers-8.13.18.tar.gz", hash = "sha256:b360c756252805d44b447b5bca6d250cf6bd6c69b6f0f4258f3bfe5ab81bef69"},
 ]
+
+[[package]]
+name = "pilkit"
+version = "3.0"
+description = "A collection of utilities and processors for the Python Imaging Library."
+optional = false
+python-versions = "*"
+files = [
+    {file = "pilkit-3.0-py3-none-any.whl", hash = "sha256:fe1707b0411a1d0cbf9ad3986779fa5a346cec4582a188740924aa39f504d117"},
+    {file = "pilkit-3.0.tar.gz", hash = "sha256:f6719e8cc0482e5447f5cb94f18b949d8e604ea9673a9b019c74d41b779e4eab"},
+]
+
+[package.dependencies]
+Pillow = ">=7.0"
 
 [[package]]
 name = "pillow"
@@ -2024,19 +2052,19 @@ files = [
 
 [[package]]
 name = "wagtail"
-version = "5.2"
+version = "5.2.2"
 description = "A Django content management system."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "wagtail-5.2-py3-none-any.whl", hash = "sha256:a1d78f99d33ade5ac3ce7dca92f570f28513214d4e203421813ba544cd38eac2"},
-    {file = "wagtail-5.2.tar.gz", hash = "sha256:695b2af9c42ab7b293f489abc9e3dcaa2cbe28977fe0b730683c43b46e0f75d1"},
+    {file = "wagtail-5.2.2-py3-none-any.whl", hash = "sha256:b469a1b3cb3ab3e0c6a2c6f56b4a7890427609c0c12ca32322e26ab534547211"},
+    {file = "wagtail-5.2.2.tar.gz", hash = "sha256:48e4c29b72b0e53eb47a3178d6b0f2c699aa284d3f3a2abfd2f04f578f44b55a"},
 ]
 
 [package.dependencies]
 anyascii = ">=0.1.5"
 beautifulsoup4 = ">=4.8,<4.12"
-Django = ">=3.2,<4.3"
+Django = ">=3.2,<5.1"
 django-filter = ">=23.3,<24"
 django-modelcluster = ">=6.1,<7.0"
 django-permissionedforms = ">=0.1,<1.0"
@@ -2129,4 +2157,4 @@ xmlsec = ["xmlsec (>=0.6.1)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "13d8a8b0e160d6216c7bdf15c90b29739833f952b4af9206be3a8eb9508e15ff"
+content-hash = "83dc35ef5ed201adfe9d582e8e2fbdd83d5006a5e66ba7ffe302b8018ba973e0"

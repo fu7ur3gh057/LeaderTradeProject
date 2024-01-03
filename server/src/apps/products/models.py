@@ -172,7 +172,7 @@ class Product(PKIDMixin, TimeStampedMixin):
 
     def add_view(self) -> None:
         self.views += 1
-        self.save()
+        self.save(update_fields=['views'])
 
     def add_to_json(self, key: str, value: Any) -> None:
         pass

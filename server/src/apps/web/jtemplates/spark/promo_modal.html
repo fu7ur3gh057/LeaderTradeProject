@@ -1,0 +1,19 @@
+<div class="promo-popup__row row">
+	<div class="promo-popup__left">
+		{% if promo.pic %}
+		<img src="{{promo.pic.url}}" alt="">
+		{% endif %}
+	</div>
+	<div class="promo-popup__right">
+		{% if promo.end %}
+		<div class="promo-popup__date">Акция до {{promo.end|date("j E Y")}}</div>
+		{% endif %}
+		<div class="promo-popup__title">{{promo.title}}</div>
+		<div class="promo-popup__text">
+			<p>
+				{{promo.desc}}
+			</p>
+		</div>
+		<a href="{{promo.button_link or '/'}}" class="btn">{{promo.button_title or 'Cмотреть каталог'}}</a>
+	</div>
+</div>
