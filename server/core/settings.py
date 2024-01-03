@@ -63,6 +63,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "nested_inline",
     "drf_yasg",
+    "froala_editor"
 ]
 
 WAGTAIL_APPS = [
@@ -269,3 +270,7 @@ CORS_ALLOW_METHODS = (
 )
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
+
+FROALA_EDITOR_OPTIONS = {
+    'language': 'ru'
+}

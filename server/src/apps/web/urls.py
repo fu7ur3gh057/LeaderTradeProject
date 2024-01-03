@@ -10,6 +10,11 @@ urlpatterns = [
     path('news', v.news),
     path('news/<slug:slug>', v.news_item),
     path('promo', v.promo),
+    path('calculator', v.calculator),
+    path('portfolio', v.portfolio),
+    path('portfolio/<slug:slug>', v.portfolio_item),
+    path('policy', v.policy),
     path('rassrochka', v.credit),
+    path('froala_editor/',include('froala_editor.urls')),
     path('js/spark/promo/<int:id>', v.promo_spark),
 ]

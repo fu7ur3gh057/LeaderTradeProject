@@ -291,37 +291,7 @@
 						{% include "_product_item.html" %}
 					{% endfor %}
 				</div>
-				{% if pages.num_pages > 1 %}
-				<a class="news__loadMore">
-					Загрузить больше
-				</a>
-				<ul class="news__page row">
-					{% if page.has_previous() %}
-					<li class="news-prev"><a href="">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M14.9998 19.92L8.47984 13.4C7.70984 12.63 7.70984 11.37 8.47984 10.6L14.9998 4.07996"
-									stroke="#282828" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
-									stroke-linejoin="round"></path>
-							</svg>
-						</a></li>
-					{% endif %}
-					{% for i in range(1, page.paginator.num_pages if page.paginator.num_pages  < 8 else 7) %}
-						<li {% if page.number == i %}
-						    
-						class="active"
-						{% endif %}><a href="?page={{i}}">{{i}}</a></li>
-					{% endfor %}
-					{% if page.has_next() %}
-					<li class="news-next"><a href="?page={{page.next_page_number()}}">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<path d="M8.91016 19.92L15.4302 13.4C16.2002 12.63 16.2002 11.37 15.4302 10.6L8.91016 4.07996"
-									stroke="#282828" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
-									stroke-linejoin="round"></path>
-							</svg>
-						</a></li>
-					{% endif %}
-				</ul>
-				{% endif %}
+				{% include "_pagination.html" %}
 			</div>
 		</div>
 	</div>

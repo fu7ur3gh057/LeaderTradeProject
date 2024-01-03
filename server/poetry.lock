@@ -622,6 +622,16 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-froala-editor"
+version = "4.1.4"
+description = "django-froala-editor package helps integrate Froala WYSIWYG HTML editor with Django."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-froala-editor-4.1.4.tar.gz", hash = "sha256:95e750c65efbf944b5dd2d89a85fb8d1c7792940bbee4607f660372f60b75089"},
+]
+
+[[package]]
 name = "django-imagekit"
 version = "5.0.0"
 description = "Automated image processing for Django models."
@@ -2157,4 +2167,4 @@ xmlsec = ["xmlsec (>=0.6.1)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "83dc35ef5ed201adfe9d582e8e2fbdd83d5006a5e66ba7ffe302b8018ba973e0"
+content-hash = "5b1512639792aa0bf3a9e39021aabd83848d68074570e28209ead020d65dac7a"
