@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models
-from promo.models import Promo, PortfolioImage, PortfolioProduct, Portfolio
+from promo.models import Promo, PortfolioImage, PortfolioProduct, Portfolio, Review
 from promo.widgets import AdminImageWidget
 
 @admin.register(Promo)
@@ -33,3 +33,8 @@ class PortfolioProductInline(admin.TabularInline):
 class PortfolioAdmin(admin.ModelAdmin):
     list_display = ("title",)
     inlines = (PortfolioImageInline, PortfolioProductInline)
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('name', 'rating', 'published_at')

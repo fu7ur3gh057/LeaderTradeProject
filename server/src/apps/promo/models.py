@@ -16,6 +16,7 @@ class Promo(models.Model):
     button_title = models.CharField(
         "Текст на кнопке", max_length=300, null=True, blank=True
     )
+
     def get_pic_path(self, filename):
         return slug_path("promo/%Y/%m", filename)
 
@@ -42,6 +43,7 @@ class Promo(models.Model):
 class Portfolio(models.Model):
     title = models.CharField(max_length=250, null=True, blank=True)
     slug = models.SlugField(max_length=150)
+
     def get_pic_path(self, filename):
         return slug_path("portfolio/%Y/%m", filename)
 
@@ -61,15 +63,17 @@ class Portfolio(models.Model):
         return str(self.id)
 
     class Meta:
-        verbose_name = 'Портфолио'
-        verbose_name_plural = 'Портфолио'
+        verbose_name = "Портфолио"
+        verbose_name_plural = "Портфолио"
 
 
 class PortfolioImage(models.Model):
     def get_pic_path(self, filename):
         return slug_path("portfolio/%Y/%m", filename)
 
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name='pics')
+    portfolio = models.ForeignKey(
+        Portfolio, on_delete=models.CASCADE, related_name="pics"
+    )
 
     pic = ProcessedImageField(
         verbose_name="фото",
@@ -90,9 +94,14 @@ class PortfolioImage(models.Model):
 
 
 class PortfolioProduct(models.Model):
-    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name="products")
+    portfolio = models.ForeignKey(
+        Portfolio, on_delete=models.CASCADE, related_name="products"
+    )
     product = models.ForeignKey(
-        "products.Product", on_delete=models.CASCADE, verbose_name="товар", related_name="+"
+        "products.Product",
+        on_delete=models.CASCADE,
+        verbose_name="товар",
+        related_name="+",
     )
     sort = models.IntegerField("порядок", default=0)
 
@@ -100,3 +109,31 @@ class PortfolioProduct(models.Model):
         ordering = ("pk",)
         verbose_name = "Товар"
         verbose_name_plural = "Товары в Портфолио"
+
+
+class Review(models.Model):
+    name = models.CharField("Имя", max_length=250)
+    rating = models.IntegerField("Рейтинг", default=5)
+    content = models.TextField("Текст")
+    published_at = models.DateField("Дата", default=date.today, null=True, blank=True)
+
+    def get_pic_path(self, filename):
+        return slug_path("review/%Y/%m", filename)
+
+    pic = ProcessedImageField(
+        verbose_name="фото",
+        upload_to=get_pic_path,
+        null=True,
+        blank=True,
+        processors=[
+            ResizeToFit(1000, 1000, upscale=False),
+        ],
+        options={"quality": 70},
+    )
+
+    def __str__(self):
+        return str(self.id)
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"

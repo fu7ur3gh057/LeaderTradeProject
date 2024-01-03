@@ -63,6 +63,13 @@ def promo_spark(r, id):
     return render(r, "spark/promo_modal.html", locals())
 
 
+def review_spark(r, id):
+    from promo.models import Review
+
+    review = Review.objects.get(id=id)
+    return render(r, "spark/review_modal.html", locals())
+
+
 def credit(r):
     return render(r, "credit.html", locals())
 
@@ -91,3 +98,11 @@ def portfolio_item(r, slug):
 
 def policy(r):
     return render(r, "politics.html", locals())
+
+
+def reviews(r):
+    from promo.models import Review
+    items = Review.objects.exclude(published_at=None).order_by('-published_at')
+    pages = Paginator(items, PAGE_SIZE)
+    page = pages.get_page(int(r.GET.get("page", 1)))
+    return render(r, 'reviews.html', locals())
