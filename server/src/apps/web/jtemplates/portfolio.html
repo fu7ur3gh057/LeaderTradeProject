@@ -1,0 +1,50 @@
+{% extends "pub.html" %}
+
+{% block main %}
+
+<ul class="breadcrumbs">
+	<div class="container row">
+		<li>Главная</li>
+		<li><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M6.25026 8.29995L3.53359 5.58328C3.21276 5.26245 3.21276 4.73745 3.53359 4.41662L6.25026 1.69995"
+					stroke="#B3B7BC" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</li>
+		<li><a href="">портфолио</a></li>
+	</div>
+</ul>
+
+<section class="news portfolio catalog">
+	<div class="container">
+		<h2>Наши шины и диски на авто</h2>
+		<div class="portfolio__top row">
+			<select class="select">
+				<option value="Марка авто">Марка авто</option>
+				<option value="BMW">BMW</option>
+			</select>
+			<select class="select">
+				<option value="Марка авто">Марка авто</option>
+				<option value="X5">X5</option>
+			</select>
+			<div class="portfolio__search row">
+				<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M6.34375 10.9375C8.88081 10.9375 10.9375 8.88081 10.9375 6.34375C10.9375 3.80669 8.88081 1.75 6.34375 1.75C3.80669 1.75 1.75 3.80669 1.75 6.34375C1.75 8.88081 3.80669 10.9375 6.34375 10.9375Z"
+						stroke="#243228" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+					<path d="M9.5918 9.59216L12.2496 12.25" stroke="#243228" stroke-width="1.5" stroke-linecap="round"
+						stroke-linejoin="round" />
+				</svg>
+				<input type="search" placeholder="Быстрый поиск по авто">
+			</div>
+		</div>
+		<div class="news__container">
+			<div class="news__wrapper">
+				{% for pf in page %}
+				{% include "_portfolio_list_item.html" %}
+				{% endfor %}
+			</div>
+			{% include "_pagination.html" %}
+		</div>
+	</div>
+</section>
+{% endblock main %}

@@ -8,7 +8,7 @@ from django.contrib.postgres.fields import ArrayField
 from django_enum_choices.fields import EnumChoiceField
 
 from src.apps.base.models import PKIDMixin, TimeStampedMixin
-from src.apps.products.models import Product
+from products.models import Product
 from src.other.enums import OrderStatus, DocumentType
 
 

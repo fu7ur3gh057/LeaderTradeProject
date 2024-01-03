@@ -3,10 +3,10 @@ from rest_framework import generics, status, filters
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from src.apps.news.api.filters import PostFilter
-from src.apps.news.api.pagination import PostPagination
-from src.apps.news.api.serializers import PostSerializer
-from src.apps.news.models import Post
+from news.api.filters import PostFilter
+from news.api.pagination import PostPagination
+from news.api.serializers import PostSerializer
+from news.models import Post
 
 
 class PostFilterAPIView(generics.ListAPIView):

@@ -1,3 +1,5 @@
+import os
+from datetime import datetime
 from django.template.defaultfilters import slugify as django_slugify
 
 alphabet = {
@@ -40,3 +42,10 @@ def slugify(text: str):
     Overriding django slugify that allows to use russian words as well.
     """
     return django_slugify("".join(alphabet.get(w, w) for w in text.lower()))
+
+
+def slug_path(base_path, filename):
+    now = datetime.now()
+    fname, dot, extension = filename.rpartition(".")
+    slug = slugify(fname)
+    return os.path.join(datetime.strftime(now, base_path), "%s.%s" % (slug, extension))

@@ -1,0 +1,173 @@
+{% extends "pub.html" %}
+
+{% block main %}
+<ul class="breadcrumbs">
+	<div class="container row">
+		<li>Главная</li>
+		<li><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M6.25026 8.29995L3.53359 5.58328C3.21276 5.26245 3.21276 4.73745 3.53359 4.41662L6.25026 1.69995"
+					stroke="#B3B7BC" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</li>
+		<li><a href="">портфолио</a></li>
+	</div>
+</ul>
+
+<section class="portfolio-header items-slider portfolio-container">
+	<div class="container">
+		<h1>{{item.title}}</h1>
+
+		<a href="" class="slider-left">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M15 19.92L8.48003 13.4C7.71003 12.63 7.71003 11.37 8.48003 10.6L15 4.08002" stroke="#243228"
+					stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</a>
+		<div class="portfolio-slider">
+			<div class="swiper-wrapper" id="lightgallery">
+				{% if item.pic %}
+				<a href="{{item.pic.url}}" class="swiper-slide">
+					<img src="{{item.pic.url}}" alt="">
+				</a>
+				{% endif %}
+				{% for im in item.pics.all() %}
+					{% if im.pic %}
+					<a href="{{im.pic.url}}" class="swiper-slide">
+						<img src="{{im.pic.url}}" alt="">
+					</a>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+		<a href="" class="slider-right">
+			<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M9.65253 21.58L16.7159 14.5166C17.55 13.6825 17.55 12.3175 16.7159 11.4833L9.65253 4.41998"
+					stroke="#243228" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square"
+					stroke-linejoin="round" />
+			</svg>
+		</a>
+	</div>
+</section>
+
+<section class="portfolio-descr">
+	<div class="container row">
+		<div class="portfolio-descr__left">
+			<div class="portfolio-descr__title">
+				Описание
+			</div>
+			{{item.content|safe}}
+			<a href="" class="btn">Подобрать диски</a>
+		</div>
+		<div class="portfolio-descr__right">
+			<div class="portfolio-descr__title">
+				Диски на авто
+			</div>
+			{% for p in products %}
+			<div class="cart__left__item row">
+				<img src="{{p.image.name|remq}}" alt="" class="cart__left__item__img">
+				<div class="cart__left__item__center">
+					<div class="cart__left__item__top row">
+						{% if p.price and p.current_price and p.current_price < p.price %}
+						<div class="cart__left__item__plate red">
+							скидка
+						</div>
+						{% endif %}
+						{% if p.rest %}
+						<div class="cart__left__item__plate black">
+							в наличии
+						</div>
+						{% endif %}
+					</div>
+					<div class="cart__left__title">
+						{{p.title}}
+					</div>
+					<div class="cart__left__descr">
+						{{p.color}}
+					</div>
+					<div class="cart__left__price row">
+						{% if p.price and p.current_price and p.current_price < p.price %}
+							<div class="cart__left__oldPrice">
+								{{(p.current_price or p.price)|int|intcomma}}
+							</div>
+							{% if p.current_price and p.price and p.current_price < p.price %}
+							<div class="cart__left__newPrice">
+								{{(p.current_price or p.price)|int|intcomma}} ₽
+							</div>
+							{% endif %}
+						{% else %}
+							<div class="item-price-main">{{(p.current_price or p.price)|int|intcomma}} ₽</div>
+						{% endif %}
+					</div>
+				</div>
+				<div class="cart__left__item__right">
+					<div class="cart__left__item__right__top row">
+						<div class="like">
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path
+									d="M10.4419 17.3867L16.7726 11.056C18.3281 9.50054 18.5576 6.94151 17.0855 5.3068C16.7168 4.89615 16.2683 4.56493 15.7673 4.33335C15.2664 4.10176 14.7235 3.97468 14.1718 3.95984C13.6201 3.94501 13.0712 4.04273 12.5585 4.24706C12.0458 4.45138 11.5801 4.75802 11.1899 5.14826L10 6.33813L8.97267 5.31079C7.41717 3.75529 4.85814 3.5258 3.22343 4.99783C2.81277 5.36655 2.48155 5.81507 2.24997 6.31603C2.01839 6.81699 1.8913 7.35988 1.87647 7.91158C1.86163 8.46327 1.95936 9.01221 2.16368 9.52489C2.368 10.0376 2.67464 10.5032 3.06488 10.8935L9.55806 17.3867C9.67527 17.5039 9.83424 17.5697 10 17.5697C10.1658 17.5697 10.3247 17.5039 10.4419 17.3867Z"
+									stroke="#243228" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+							</svg>
+
+						</div>
+						<div class="cart__left__calc row">
+							<div class="cart__left__calc__minus">
+								<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M2.1875 7H11.8125" stroke="#243228" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round"></path>
+								</svg>
+							</div>
+							<input type="number" class="cart__left__calc__num" value="1">
+							<div class="cart__left__calc__plus">
+								<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<path d="M2.1875 7H11.8125" stroke="white" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round"></path>
+									<path d="M7 2.1875V11.8125" stroke="white" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round"></path>
+								</svg>
+							</div>
+						</div>
+					</div>
+					<div class="cart__left__item__right__bottom">
+						<div class="cart__left__number">4 шт</div>
+						<div class="cart__left__calcPrice">
+							{{((p.current_price or p.price) * 4)|int|intcomma}} ₽
+						</div>
+					</div>
+
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</section>
+
+<section class="portfolio-same items-slider portfolio-container news portfolio">
+	<div class="container">
+		<h2>Похожие диски</h2>
+		<a href="" class="slider-left">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M15 19.92L8.48003 13.4C7.71003 12.63 7.71003 11.37 8.48003 10.6L15 4.08002" stroke="#243228"
+					stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</a>
+		<div class="portfolio-slider">
+			<div class="swiper-wrapper">
+				{% for pf in other_items %}
+				{% include "_portfolio_list_item.html" %}
+				{% endfor %}
+			</div>
+		</div>
+		<a href="" class="slider-right">
+			<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M9.65253 21.58L16.7159 14.5166C17.55 13.6825 17.55 12.3175 16.7159 11.4833L9.65253 4.41998"
+					stroke="#243228" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square"
+					stroke-linejoin="round" />
+			</svg>
+		</a>
+	</div>
+</section>
+{% endblock main %}
+
+{% block promo %}
+    
+{% endblock promo %}

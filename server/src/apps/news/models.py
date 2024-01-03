@@ -1,24 +1,43 @@
 from django.db import models
 from wagtail import blocks
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.fields import StreamField
+from products.models import Product
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.models import Page
+from django import forms
+from wagtail.models import Page, Orderable
+from modelcluster.fields import ParentalKey
 
 from django.utils.translation import gettext_lazy as _
 
 from src.apps.base.models import TimeStampedMixin, PKIDMixin
 from src.utils.slug_utils import slugify
 
+class LedTextInput(forms.TextInput):
+    def format_value(self, value):
+        print('for', value)
+        if value is not None:
+            return ",".join(map(str, value))
+        return ""
 
-class Post(PKIDMixin, TimeStampedMixin, Page):
-    # title = models.CharField(max_length=255, verbose_name=_("Название"))
-    # slug = models.SlugField(
-    #     max_length=250, null=True, blank=True, unique=True, verbose_name=_("URL путь")
-    # )
-    products = models.ManyToManyField(
-        to="products.Product", related_name="news", verbose_name=_("Товары")
-    )
+
+    def value_from_datadict(self, data, files, name):
+        raise Exception()
+        value = data.get(name)
+        if value:
+            print( value.split(','))
+            return value.split(',')
+        # print(data)
+        # raw = data.get(name)
+        # if not raw:
+        #     return
+        # vals = raw.split(",")
+        # if vals:
+        #     val = list(map(int, vals))
+        #     print('val', val)
+        #     return Product.objects.filter(pk__in=val)
+
+class Post(TimeStampedMixin, Page):
     pic = models.ForeignKey(
         "wagtailimages.Image",
         null=True,
@@ -44,6 +63,7 @@ class Post(PKIDMixin, TimeStampedMixin, Page):
         FieldPanel("date"),
         FieldPanel("pic"),
         FieldPanel("body"),
+        InlinePanel('products', heading="Товары в новости", label="Товар"),
     ]
     date = models.DateTimeField("Дата новости")
 
@@ -57,3 +77,12 @@ class Post(PKIDMixin, TimeStampedMixin, Page):
 
     def __str__(self) -> str:
         return str(self.id)
+
+
+class PostProduct(Orderable):
+    page = ParentalKey(Post, on_delete=models.CASCADE, related_name='products')
+    product = models.ForeignKey('products.Product', on_delete=models.CASCADE, verbose_name='ИД Товара')
+
+    panels = [
+        FieldPanel('product', widget=forms.TextInput()),
+    ]

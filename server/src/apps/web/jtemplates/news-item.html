@@ -1,0 +1,119 @@
+{% extends "pub.html" %}
+
+{% block main %}
+<section class="article row">
+	<div class="article__left">
+		<ul class="breadcrumbs">
+			<div class=" row">
+				<li>Главная</li>
+				<li><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M6.25026 8.29995L3.53359 5.58328C3.21276 5.26245 3.21276 4.73745 3.53359 4.41662L6.25026 1.69995"
+							stroke="#B3B7BC" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+					</svg>
+				</li>
+				<li><a href="">хромированные колесные диски – более подробно о правильном уходе</a></li>
+			</div>
+		</ul>
+		<h1>{{post.title}}</h1>
+		<div class="article__left__top row">
+			<a href="" class="article__soc">
+				<img src="/static/files/ar1.svg" alt="">
+			</a>
+			<a href="" class="article__soc">
+				<img src="/static/files/ar2.svg" alt="">
+			</a>
+			<a href="" class="article__soc">
+				<img src="/static/files/ar3.svg" alt="">
+			</a>
+			<div class="article__date">
+				Новость · {{post.date|date("j E Y")}}
+			</div>
+		</div>
+		<article>
+			<div class="article__preview">
+				{{ srcset_image(post.pic, "width-{400,800}", sizes="(max-width: 600px) 400px, 80vw") }}
+				<!-- <p class="">С самого момента своего появления, хромированные диски начали стремительно набирать популярность
+					среди автомобилистов. Эффектный внешний вид
+					и оригинальный дизайн – это главные факторы, которые привлекают покупателей, способных по достоинству
+					оценить немеркнущий блеск, гармонично дополняющий общий экстерьер автомобиля.</p> -->
+			</div>
+			{% for block in post.body %}
+		        {% if block.block_type == 'heading' %}
+		            <h2>{{ block.value }}</h2>
+		        {% else %}
+		            <section class="block-{{ block.block_type }}">
+		                {% include_block block %}
+		            </section>
+		        {% endif %}
+		    {% endfor %}
+		</article>
+		<div class="article__recomend">
+			<section class="items-slider">
+
+	<div class="items-slider__top row row-space">
+		<h2>Рекомендуемые диски</h2>
+	</div>
+	<a href="" class="slider-left">
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M15 19.92L8.48003 13.4C7.71003 12.63 7.71003 11.37 8.48003 10.6L15 4.08002" stroke="#243228"
+				stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+		</svg>
+	</a>
+	<div class="items-slider-wrapper news-slider items">
+		<div class="swiper-wrapper">
+			{% for p in post_products %}
+				{% include "_product_item.html" %}
+			{% endfor %}
+		</div>
+	</div>
+	<a href="" class="slider-right">
+		<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M9.65253 21.58L16.7159 14.5166C17.55 13.6825 17.55 12.3175 16.7159 11.4833L9.65253 4.41998"
+				stroke="#243228" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="square"
+				stroke-linejoin="round" />
+		</svg>
+	</a>
+
+</section>
+		</div>
+		<div class="article__left__top row">
+			<a href="" class="article__soc">
+				<img src="/static/files/ar1.svg" alt="">
+			</a>
+			<a href="" class="article__soc">
+				<img src="/static/files/ar2.svg" alt="">
+			</a>
+			<a href="" class="article__soc">
+				<img src="/static/files/ar3.svg" alt="">
+			</a>
+			<div class="article__date">
+				Новость · {{post.date|date("j E Y")}}
+			</div>
+		</div>
+	</div>
+	<div class="article__right">
+		{% for post in other_posts %}
+		<a href="/news/{{post.slug}}" class="news__item">
+			<div class="news__item__top">
+				{{ srcset_image(post.pic, "width-{400,800}", sizes="(max-width: 600px) 400px, 80vw") }}
+				<div class="news__item__lable">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
+							stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+							stroke-linejoin="round"></path>
+					</svg>
+				</div>
+			</div>
+			<div class="news__item__title">
+				{{post.title}}
+			</div>
+			<div class="news__item__bottom row">
+				Новость · {{post.date|date("j E Y")}}
+			</div>
+		</a>
+		{% endfor %}
+	</div>
+</section>
+
+{% endblock main %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<ul class="breadcrumbs">
+	<div class="container row">
+		<li>Главная</li>
+		<li><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M6.25026 8.29995L3.53359 5.58328C3.21276 5.26245 3.21276 4.73745 3.53359 4.41662L6.25026 1.69995"
+					stroke="#B3B7BC" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</li>
+		<li><a href="">Карта сайта</a></li>
+	</div>
+</ul>
+
+<section class="notfound">
+	<div class="container row">
+		<div class="notfound__left">
+			<h1>Карта сайта</h1>
+			<ul>
+				<li>
+					<a href="/">Главная</a>
+				</li>
+				<li>
+					<a href="/catalog/tires">Шины</a>
+				</li>
+				<li>
+					<a href="/catalog/rims">Диски</a>
+				</li>
+			</ul>
+			<a href="/" class="btn">Перейти на главную</a>
+		</div>
+		<div class="notfound__right">
+			<img src="assets/img/nf.png" alt="">
+		</div>
+	</div>
+</section>
+{% endblock content %}

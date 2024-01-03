@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 from django_enum_choices.serializers import EnumChoiceField
 from rest_framework import serializers
 
-from src.apps.products.models import Category, Product
+from products.models import Category, Product
 from src.other.enums import ProductType
 
 

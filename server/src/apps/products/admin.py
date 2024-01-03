@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from src.apps.products.models import (
+from products.models import (
     Category,
     Product,
     ProductImage,

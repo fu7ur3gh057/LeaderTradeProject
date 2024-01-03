@@ -1,0 +1,49 @@
+{% extends "pub.html" %}
+
+{% block main %}
+
+<ul class="breadcrumbs">
+	<div class="container row">
+		<li>Главная</li>
+		<li><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M6.25026 8.29995L3.53359 5.58328C3.21276 5.26245 3.21276 4.73745 3.53359 4.41662L6.25026 1.69995"
+					stroke="#B3B7BC" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		</li>
+		<li><a href="">Частые вопросы</a></li>
+	</div>
+</ul>
+
+<section class="news">
+	<div class="container">
+		<h2>Новости компании</h2>
+		<div class="news__container">
+			<div class="news__wrapper">
+				{% for post in page %}
+				<a href="/news/{{post.slug}}" class="news__item">
+					<div class="news__item__top">
+						{{ srcset_image(post.pic, "width-{400,800}", sizes="(max-width: 600px) 400px, 80vw") }}
+						<div class="news__item__lable">
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path
+									d="M7.4248 16.6L12.8581 11.1667C13.4998 10.525 13.4998 9.47503 12.8581 8.83336L7.4248 3.40002"
+									stroke="white" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+									stroke-linejoin="round" />
+							</svg>
+						</div>
+					</div>
+					<div class="news__item__title">
+						{{post.title}}
+					</div>
+					<div class="news__item__bottom row">
+						Новость · {{post.date|date("j E Y")}}
+					</div>
+				</a>
+				{% endfor %}
+			</div>
+			{% include "_pagination.html" %}
+		</div>
+	</div>
+</section>
+
+{% endblock main %}

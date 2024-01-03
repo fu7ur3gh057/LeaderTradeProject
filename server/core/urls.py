@@ -10,6 +10,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from core.settings import API_URL
+import src.apps.web.urls
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -31,7 +32,7 @@ urlpatterns = [
         lambda request: HttpResponse("OK", content_type="text/plain"),
     ),
     # path(f"{API_URL}/auth/", include("src.apps.users.api.urls")),
-    # path(f"{API_URL}/products/", include("src.apps.products.api.urls")),
+    # path(f"{API_URL}/products/", include("products.api.urls")),
     # path(f"{API_URL}/profiles/", include("src.apps.profiles.api.urls")),
     # path(f"{API_URL}/locations/", include("src.apps.locations.api.urls")),
     # path(f"{API_URL}/catalog/", include("src.apps.catalog.api.urls")),
@@ -57,7 +58,11 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', include(src.apps.web.urls))
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "LeaderTrade"
 admin.site.site_title = "LeaderTrade Admin Portal"

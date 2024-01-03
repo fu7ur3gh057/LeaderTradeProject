@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from src.apps.news.models import Post
+from news.models import Post
 
 #
 # class PostAdmin(admin.ModelAdmin):

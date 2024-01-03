@@ -1,5 +1,5 @@
 from django.urls import path, include
-from src.apps.products.api.views import (
+from products.api.views import (
     CategoryTreeAPIView,
     CategoryListAPIView,
     AncestorsCategoryListAPIView,
