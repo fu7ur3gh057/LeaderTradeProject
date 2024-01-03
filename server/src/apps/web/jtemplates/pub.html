@@ -17,90 +17,31 @@
     		</a>
     		<div class="promo-slider">
     			<div class="swiper-wrapper">
-    				<div class="swiper-slide" style="background: url('/static/img/pbg1.png')" data-fancybox data-src="#promo1">
-    					<div class="promo-slider__left">
-    						<div class="promo-slider__title">
-    							Подарок за покупку летних шин
-    						</div>
-    						<p>
-    							Шины Continental или Matador
-    						</p>
-    						<a href="">
-    							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    								<path d="M14.43 5.92999L20.5 12L14.43 18.07" stroke="#243228" stroke-width="1.5"
-    									stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-    								<path d="M3.5 12H20.33" stroke="#243228" stroke-width="1.5" stroke-miterlimit="10"
-    									stroke-linecap="round" stroke-linejoin="round" />
-    							</svg>
-    						</a>
-    					</div>
-    					<div class="promo-slider__img">
-    						<img src="/static/img/p1.png" alt="">
-    					</div>
-    				</div>
-    				<div class="swiper-slide" style="background: url('/static/img/pbg2.png')" data-fancybox data-src="#promo2">
-    					<div class="promo-slider__left">
-    						<div class="promo-slider__title">
-    							Подарок за покупку летних шин
-    						</div>
-    						<p>
-    							Шины Continental или Matador
-    						</p>
-    						<a href="">
-    							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    								<path d="M14.43 5.92999L20.5 12L14.43 18.07" stroke="#243228" stroke-width="1.5"
-    									stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-    								<path d="M3.5 12H20.33" stroke="#243228" stroke-width="1.5" stroke-miterlimit="10"
-    									stroke-linecap="round" stroke-linejoin="round" />
-    							</svg>
-    						</a>
-    					</div>
-    					<div class="promo-slider__img">
-    						<img src="/static/img/p2.png" alt="">
-    					</div>
-    				</div>
-    				<div class="swiper-slide" style="background: url('/static/img/pbg3.png')" data-fancybox data-src="#promo3">
-    					<div class="promo-slider__left">
-    						<div class="promo-slider__title">
-    							Подарок за покупку летних шин
-    						</div>
-    						<p>
-    							Шины Continental или Matador
-    						</p>
-    						<a href="">
-    							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    								<path d="M14.43 5.92999L20.5 12L14.43 18.07" stroke="#243228" stroke-width="1.5"
-    									stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-    								<path d="M3.5 12H20.33" stroke="#243228" stroke-width="1.5" stroke-miterlimit="10"
-    									stroke-linecap="round" stroke-linejoin="round" />
-    							</svg>
-    						</a>
-    					</div>
-    					<div class="promo-slider__img">
-    						<img src="/static/img/p3.png" alt="">
-    					</div>
-    				</div>
-    				<div class="swiper-slide" style="background: url('/static/img/pbg3.png')" data-fancybox data-src="#promo4">
-    					<div class="promo-slider__left">
-    						<div class="promo-slider__title">
-    							Подарок за покупку летних шин
-    						</div>
-    						<p>
-    							Шины Continental или Matador
-    						</p>
-    						<a href="">
-    							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    								<path d="M14.43 5.92999L20.5 12L14.43 18.07" stroke="#243228" stroke-width="1.5"
-    									stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-    								<path d="M3.5 12H20.33" stroke="#243228" stroke-width="1.5" stroke-miterlimit="10"
-    									stroke-linecap="round" stroke-linejoin="round" />
-    							</svg>
-    						</a>
-    					</div>
-    					<div class="promo-slider__img">
-    						<img src="/static/img/p3.png" alt="">
-    					</div>
-    				</div>
+    				{% for pr in get_recent_promo() %}
+                    <div class="swiper-slide" {% if pr.pic %}style="background: url('{{pr.pic.url}}')" {% endif %} ts-req-after="openFancy" ts-req="/js/spark/promo/{{pr.id}}" ts-target="#promo1" ts-swap="inner">
+                        <div class="promo-slider__left">
+                            <div class="promo-slider__title">
+                                {{pr.title}}
+                            </div>
+                            {% if pr.title2 %}
+                            <p>
+                                {{pr.title2}}
+                            </p>
+                            {% endif %}
+                            <a href="#">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14.43 5.92999L20.5 12L14.43 18.07" stroke="#243228" stroke-width="1.5"
+                                        stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M3.5 12H20.33" stroke="#243228" stroke-width="1.5" stroke-miterlimit="10"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                        </div>
+                        <!-- <div class="promo-slider__img">
+                            <img src="/static/img/p1.png" alt="">
+                        </div> -->
+                    </div>
+                    {% endfor %}
     			</div>
     		</div>
     		<a href="" class="slider-right">
@@ -113,89 +54,7 @@
     	</div>
 
     	<div class="pop-city promo-popup" id="promo1">
-    		<div class="promo-popup__row row">
-    			<div class="promo-popup__left">
-    				<img src="/static/img/prom.png" alt="">
-    			</div>
-    			<div class="promo-popup__right">
-    				<div class="promo-popup__date">Акция до17 мая 2023</div>
-    				<div class="promo-popup__title">Подарок за покупку <br>
-    					летних шин</div>
-    				<div class="promo-popup__text">
-    					<p>
-    						Акция действует на все шины марок Continental
-    						или Matador. Для получения подарка необходимо добавить шины данных компаний в корзину
-    						и мы автоматически предоставим вам подарок
-    						за покупку шин Continental или Matador.
-    					</p>
-    				</div>
-    				<a href="" class="btn">Cмотреть каталог</a>
-    			</div>
-    		</div>
-    	</div>
-    	<div class="pop-city promo-popup" id="promo2">
-    		<div class="promo-popup__row row">
-    			<div class="promo-popup__left">
-    				<img src="/static/img/prom.png" alt="">
-    			</div>
-    			<div class="promo-popup__right">
-    				<div class="promo-popup__date">Акция до17 мая 2023</div>
-    				<div class="promo-popup__title">Подарок за покупку <br>
-    					летних шин</div>
-    				<div class="promo-popup__text">
-    					<p>
-    						Акция действует на все шины марок Continental
-    						или Matador. Для получения подарка необходимо добавить шины данных компаний в корзину
-    						и мы автоматически предоставим вам подарок
-    						за покупку шин Continental или Matador.
-    					</p>
-    				</div>
-    				<a href="" class="btn">Cмотреть каталог</a>
-    			</div>
-    		</div>
-    	</div>
-    	<div class="pop-city promo-popup" id="promo3">
-    		<div class="promo-popup__row row">
-    			<div class="promo-popup__left">
-    				<img src="/static/img/prom.png" alt="">
-    			</div>
-    			<div class="promo-popup__right">
-    				<div class="promo-popup__date">Акция до17 мая 2023</div>
-    				<div class="promo-popup__title">Подарок за покупку <br>
-    					летних шин</div>
-    				<div class="promo-popup__text">
-    					<p>
-    						Акция действует на все шины марок Continental
-    						или Matador. Для получения подарка необходимо добавить шины данных компаний в корзину
-    						и мы автоматически предоставим вам подарок
-    						за покупку шин Continental или Matador.
-    					</p>
-    				</div>
-    				<a href="" class="btn">Cмотреть каталог</a>
-    			</div>
-    		</div>
-    	</div>
-    	<div class="pop-city promo-popup" id="promo4">
-    		<div class="promo-popup__row row">
-    			<div class="promo-popup__left">
-    				<img src="/static/img/prom.png" alt="">
-    			</div>
-    			<div class="promo-popup__right">
-    				<div class="promo-popup__date">Акция до17 мая 2023</div>
-    				<div class="promo-popup__title">Подарок за покупку <br>
-    					летних шин</div>
-    				<div class="promo-popup__text">
-    					<p>
-    						Акция действует на все шины марок Continental
-    						или Matador. Для получения подарка необходимо добавить шины данных компаний в корзину
-    						и мы автоматически предоставим вам подарок
-    						за покупку шин Continental или Matador.
-    					</p>
-    				</div>
-    				<a href="" class="btn">Cмотреть каталог</a>
-    			</div>
-    		</div>
-    	</div>
+        </div>
     </section>
     {% endblock promo %}
 
