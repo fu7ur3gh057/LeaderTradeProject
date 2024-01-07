@@ -102,7 +102,8 @@ def policy(r):
 
 def reviews(r):
     from promo.models import Review
-    items = Review.objects.exclude(published_at=None).order_by('-published_at')
+
+    items = Review.objects.exclude(published_at=None).order_by("-published_at")
     pages = Paginator(items, PAGE_SIZE)
     page = pages.get_page(int(r.GET.get("page", 1)))
-    return render(r, 'reviews.html', locals())
+    return render(r, "reviews.html", locals())

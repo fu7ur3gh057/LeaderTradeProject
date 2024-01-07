@@ -40,6 +40,7 @@ def get_most_viewed_products(ctx):
 @jinja2.pass_context
 def get_recent_promo(ctx):
     from promo.models import Promo
+
     return Promo.objects.order_by("-start")[:6]
 
 
@@ -106,7 +107,7 @@ def environment(**options):
             "str": str,
             "spark": spark,
             "get_most_viewed_products": get_most_viewed_products,
-            "get_recent_promo": get_recent_promo
+            "get_recent_promo": get_recent_promo,
         }
     )
     env.filters.update(

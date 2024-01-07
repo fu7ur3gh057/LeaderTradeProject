@@ -6,6 +6,7 @@ class StarcoTyreSchema(BaseModel):
     Alternative_size: str | None = None
     boh_product_no: str | None = None
     Brand: str | None = None
+    brand: str | None = None
     Comment: str | None = None
     Comment_link: str | None = None
     ean: str | None = None
@@ -56,6 +57,7 @@ class StarcoTyreSchema(BaseModel):
     volume_CuM: float | None = None
     Wet_Grip: str | None = None
     With_mm: str | None = None
+    slug: str | None = None
     ___: str | None = None
 
 
@@ -67,6 +69,7 @@ class StarcoRimSchema(BaseModel):
     Bolt_hole_circle: str | None = None
     Bolt_hole_number: str | None = None
     Brand: str | None = None
+    brand: str | None = None
     Center_bore_diameter: str | None = None
     Colour: str | None = None
     Comment: str | None = None
@@ -94,6 +97,7 @@ class StarcoRimSchema(BaseModel):
     Offset_hub: str | None = None
     Offset_hub_length: str | None = None
     product_no: str | None = None
+    slug: str | None = None
     Produkt: str | None = None
     RAL: str | None = None
     Recom_Tyre_Size: str | None = None

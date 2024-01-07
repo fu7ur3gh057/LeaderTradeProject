@@ -26,6 +26,7 @@ class ProductAdmin(admin.ModelAdmin):
         "price",
         "discount",
         "rest",
+        "unload_service",
         "created_at",
     ]
     list_display_links = [

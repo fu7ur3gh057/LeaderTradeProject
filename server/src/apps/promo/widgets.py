@@ -1,6 +1,7 @@
 from django.contrib.admin.widgets import AdminFileWidget
 from django.utils.html import mark_safe, format_html
 
+
 def image_div(image_url, file_name):
     return f"""
         <div style="flex-direction: row; display: flex;">

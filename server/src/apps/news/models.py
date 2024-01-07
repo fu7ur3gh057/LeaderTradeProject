@@ -13,20 +13,20 @@ from django.utils.translation import gettext_lazy as _
 from src.apps.base.models import TimeStampedMixin, PKIDMixin
 from src.utils.slug_utils import slugify
 
+
 class LedTextInput(forms.TextInput):
     def format_value(self, value):
-        print('for', value)
+        print("for", value)
         if value is not None:
             return ",".join(map(str, value))
         return ""
-
 
     def value_from_datadict(self, data, files, name):
         raise Exception()
         value = data.get(name)
         if value:
-            print( value.split(','))
-            return value.split(',')
+            print(value.split(","))
+            return value.split(",")
         # print(data)
         # raw = data.get(name)
         # if not raw:
@@ -36,6 +36,7 @@ class LedTextInput(forms.TextInput):
         #     val = list(map(int, vals))
         #     print('val', val)
         #     return Product.objects.filter(pk__in=val)
+
 
 class Post(TimeStampedMixin, Page):
     pic = models.ForeignKey(
@@ -63,7 +64,7 @@ class Post(TimeStampedMixin, Page):
         FieldPanel("date"),
         FieldPanel("pic"),
         FieldPanel("body"),
-        InlinePanel('products', heading="Товары в новости", label="Товар"),
+        InlinePanel("products", heading="Товары в новости", label="Товар"),
     ]
     date = models.DateTimeField("Дата новости")
 
@@ -80,9 +81,11 @@ class Post(TimeStampedMixin, Page):
 
 
 class PostProduct(Orderable):
-    page = ParentalKey(Post, on_delete=models.CASCADE, related_name='products')
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE, verbose_name='ИД Товара')
+    page = ParentalKey(Post, on_delete=models.CASCADE, related_name="products")
+    product = models.ForeignKey(
+        "products.Product", on_delete=models.CASCADE, verbose_name="ИД Товара"
+    )
 
     panels = [
-        FieldPanel('product', widget=forms.TextInput()),
+        FieldPanel("product", widget=forms.TextInput()),
     ]

@@ -13,6 +13,7 @@ from src.api.schemas.starco_schemas import (
 )
 
 from core.settings import env
+from src.utils.slug_utils import slugify
 
 _base_url = env("STARCO_SERVICE_URL")
 _username = env("STARCO_SERVICE_LOGIN")
@@ -21,23 +22,39 @@ basic_auth = HTTPBasicAuth(_username, _password)
 
 
 def get_starco_tyres() -> list[StarcoTyreSchema]:
+    unique_slugs = set()
+    unique_tyres = []
     response = requests.get(
         f"{_base_url}/rus_product_catalog_tyres",
         auth=basic_auth,
     )
     parsed = response.json()
     tires = [StarcoTyreSchema(**tire) for tire in parsed["value"]]
-    return tires
+    for tire in tires:
+        slug = slugify(text=tire.full_name)
+        if slug not in unique_slugs:
+            tire.slug = slug
+            unique_slugs.add(slug)
+            unique_tyres.append(tire)
+    return unique_tyres
 
 
 def get_starco_rims() -> list[StarcoRimSchema]:
+    unique_slugs = set()
+    unique_rims = []
     response = requests.get(
         f"{_base_url}/rus_product_catalog_wheelsrims",
         auth=basic_auth,
     )
     parsed = response.json()
     rims = [StarcoRimSchema(**rim) for rim in parsed["value"]]
-    return rims
+    for rim in rims:
+        slug = slugify(text=rim.full_name)
+        if slug not in unique_slugs:
+            rim.slug = slug
+            unique_slugs.add(slug)
+            unique_rims.append(rim)
+    return unique_rims
 
 
 def get_starco_stock() -> list[StarcoStockSchema]:

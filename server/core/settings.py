@@ -10,7 +10,7 @@ from django.utils.log import DEFAULT_LOGGING
 import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(str(BASE_DIR / 'src/apps'))
+sys.path.append(str(BASE_DIR / "src/apps"))
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
@@ -63,7 +63,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "nested_inline",
     "drf_yasg",
-    "froala_editor"
+    "froala_editor",
 ]
 
 WAGTAIL_APPS = [
@@ -96,7 +96,7 @@ LOCAL_APPS = [
     "unloads.apps.UnloadsConfig",
     "news.apps.NewsConfig",
     "promo",
-    "web.apps.WebConfig"
+    "web.apps.WebConfig",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + WAGTAIL_APPS + LOCAL_APPS
@@ -118,18 +118,18 @@ TEMPLATES = [
     {
         "NAME": "jinja2",
         "BACKEND": "django.template.backends.jinja2.Jinja2",
-        'APP_DIRS': False,
-        'DIRS': [
-            BASE_DIR / 'src/apps/web/jtemplates',
+        "APP_DIRS": False,
+        "DIRS": [
+            BASE_DIR / "src/apps/web/jtemplates",
         ],
-        'OPTIONS': {
-            "environment": 'src.apps.web.jinja.environment',
-            'extensions': [
-                'wagtail.jinja2tags.core',
-                'wagtail.admin.jinja2tags.userbar',
-                'wagtail.images.jinja2tags.images',
+        "OPTIONS": {
+            "environment": "src.apps.web.jinja.environment",
+            "extensions": [
+                "wagtail.jinja2tags.core",
+                "wagtail.admin.jinja2tags.userbar",
+                "wagtail.images.jinja2tags.images",
             ],
-        }
+        },
     },
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -271,6 +271,4 @@ CORS_ALLOW_METHODS = (
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
 
-FROALA_EDITOR_OPTIONS = {
-    'language': 'ru'
-}
+FROALA_EDITOR_OPTIONS = {"language": "ru"}

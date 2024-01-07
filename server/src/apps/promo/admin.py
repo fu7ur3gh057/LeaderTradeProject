@@ -3,9 +3,11 @@ from django.db import models
 from promo.models import Promo, PortfolioImage, PortfolioProduct, Portfolio, Review
 from promo.widgets import AdminImageWidget
 
+
 @admin.register(Promo)
 class PromoAdmin(admin.ModelAdmin):
-	list_display = ("title", "title2", "start", "end")
+    list_display = ("title", "title2", "start", "end")
+
 
 class PortfolioImageInline(admin.TabularInline):
     model = PortfolioImage
@@ -28,7 +30,6 @@ class PortfolioProductInline(admin.TabularInline):
     formfield_overrides = {models.ImageField: {"widget": AdminImageWidget}}
 
 
-
 @admin.register(Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
     list_display = ("title",)
@@ -37,4 +38,4 @@ class PortfolioAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('name', 'rating', 'published_at')
+    list_display = ("name", "rating", "published_at")

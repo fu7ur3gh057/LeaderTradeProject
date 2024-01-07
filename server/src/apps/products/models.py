@@ -157,8 +157,11 @@ class Product(PKIDMixin, TimeStampedMixin):
     )
     views = models.IntegerField(default=0, verbose_name=_("Просмотры"))
     image = models.ImageField(
-        upload_to="products/", blank=True, null=True, verbose_name=_("Изображение"),
-        max_length=255
+        upload_to="products/",
+        blank=True,
+        null=True,
+        verbose_name=_("Изображение"),
+        max_length=255,
     )
     rest = models.IntegerField(default=0, verbose_name=_("Остаток"))
     ext_data = models.JSONField(
@@ -172,13 +175,15 @@ class Product(PKIDMixin, TimeStampedMixin):
 
     def add_view(self) -> None:
         self.views += 1
-        self.save(update_fields=['views'])
+        self.save(update_fields=["views"])
 
     def add_to_json(self, key: str, value: Any) -> None:
         pass
 
     def save(self, *args, **kwargs) -> None:
-        if not self.pk_id:
+        is_new = self.pk is None
+        if is_new:
+            print('is new')
             self.image.upload_to = f"products/{self.pk_id}/"
             # update slug
             self.slug = slugify(self.title)

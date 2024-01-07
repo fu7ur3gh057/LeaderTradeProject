@@ -57,7 +57,7 @@ def find_rim_list() -> list[DiskPriceRestSchema]:
             page=current_page,
             pageSize=2000,
         )
-        
+
         if pages_count == None:
             pages_count = int(rims.totalPages)
 
@@ -99,8 +99,11 @@ def get_rim_goods_info(code_list: str) -> list[RimContainerSchema]:
         login=_username, password=_password, code_list=code_list
     )
     for data in info_list.rimList.RimContainer:
-        rim_schema = RimContainerSchema.to_pydantic(data=data)
-        result_list.append(rim_schema)
+        try:
+            rim_schema = RimContainerSchema.to_pydantic(data=data)
+            result_list.append(rim_schema)
+        except Exception as ex:
+            print(ex)
     return result_list
 
 
